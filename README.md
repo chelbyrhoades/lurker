@@ -50,7 +50,9 @@ Please make sure to update tests as appropriate.
 
 ## Authors and Acknowledgement
 Chelby Rhoades, (me), the developer on this project.
+
 Dr. Freeman Moore, my Professor that assigned this project.
+
 My cat Cookie Dough, for being the best, sweetest, greatest, most amazing, jaw-droppingly intelligent, talented, and always there for me.
 
 ## License
