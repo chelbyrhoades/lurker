@@ -35,6 +35,7 @@ TBD
 #### Politeness
    To avoid overloading a website, a politeness policy is used. The performance of a site is heavily affected while a web crawler downloads a portion. Servers have to handle requests of the viewers of the site and a web crawler could potentially overload it. Administrators are able to indicate which parts of the website that cannot be accessed by the crawler. 
    To implement politness, Lurker uses an interval that restricts itself from overloading the server.
+   The 'politeness.txt' file within this project goes more in depth with why and how web crawlers like Lurker need politeness. 
 
 ## Bugs
 It is known through the project to expect that there are no errors contained in the input files. 
