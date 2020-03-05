@@ -1,0 +1,11 @@
+Politeness Policy - Not being a Parasite to a Website
+
+In order to retrieve data, web crawlers need to implement politeness so that the server isn't overloaded. A single crawler can slow down a website significantly; and in turn, the user of the web crawler could get blocked. 
+
+Most websites use a the robots exclusion protocol in order to identify which parts that the web crawler is unable to access. For Lurker, the website in which it crawls will have this protocol.
+
+************
+This document is on Version 1.0
+Author: Chelby Rhoades
+Initial Creation: March 5, 2020
+Last edit: March 5, 2020
