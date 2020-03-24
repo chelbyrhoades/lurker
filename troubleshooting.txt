@@ -21,9 +21,13 @@ The problem I was running into was that I was using pip, not pip3. This version 
 
 If Lurker is having this same issue, and the solution above doesn't work, here are a few links you can research that I used:
 
+No module Named requests
 https://stackoverflow.com/questions/17309288/importerror-no-module-named-requests
 
+Uninstalling requests
 https://stackoverflow.com/questions/19283271/how-to-uninstall-requests-2-0-0
-(uninstalling requests so you can reinstall it)
+
+Installing urllib
+https://stackoverflow.com/questions/47730259/installing-urllib-in-python3-6
 
 ********v********************************

@@ -1,0 +1,8 @@
+Design Doc | Lurker
+
+Key Architecture Explanation:
+TBD
+
+Data Structures used:
+List - storing urls
+Dictionary - storing the words and their document frequencies

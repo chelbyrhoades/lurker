@@ -4,7 +4,9 @@ A python-based web crawler designed for SMU CS 5337. It is given a preset list o
 
 ## Installation of Required libraries
 ```bash
-  pip install scrapy
+  pip3 install requests
+  pip3 install urllib
+  pip3 install bs4
 ```
 
 ## Running the project
@@ -28,14 +30,14 @@ The required input to the program is 'N', which limits the number of retrieved p
 Ideas to be released int the future - TBD
 
 #### Key Architecture
-TBD
+There is an image uploaded to this github that shows a visual representation of this web crawler. A file called 'Design Doc' covers these architectures, as well as main data structures used within the project.
 #### Identify and describe your major data structures
   Lists are used throughout the project. 
   TBD on more major data structures
 #### Politeness
    To avoid overloading a website, a politeness policy is used. The performance of a site is heavily affected while a web crawler downloads a portion. Servers have to handle requests of the viewers of the site and a web crawler could potentially overload it. Administrators are able to indicate which parts of the website that cannot be accessed by the crawler. 
    To implement politness, Lurker uses an interval that restricts itself from overloading the server.
-   The 'politeness.txt' file within this project goes more in depth with why and how web crawlers like Lurker need politeness. 
+   The 'politeness.txt' file within this project goes more in depth with why and how web crawlers like Lurker need politeness.
 
 ## Bugs
 It is known through the project to expect that there are no errors contained in the input files. 
@@ -50,14 +52,20 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 Please make sure to update tests as appropriate.
 
 ## Authors and Acknowledgement
-Chelby Rhoades, (me), the developer on this project.
+Chelby Rhoades, (me), the main/only developer on this project.
 
 Dr. Freeman Moore, my Professor that assigned this project.
 
-My cat Cookie Dough, for being the best, sweetest, greatest, most amazing, jaw-droppingly intelligent, talented, and always there for me.
+My cat Cookie Dough, for being the best, sweetest, greatest, most amazing, jaw-droppingly intelligent, talented, and always there for me. When the epidemic happened this year, my stress levels were astronomical. She's great at calming my anxiety and making sure that I'm in the right headspace.
 
 ## License
-Currently, a license does not exist other than the code was developed in SMU's Spring 2020 CS 5337/7335 course: Information Retrieval and Web Search
+Currently, a license does not exist other than the code was developed in SMU's Spring 2020 CS 5337/7335 course: Information Retrieval and Web Search. Since this code was developed under the guidance of a university, the university owns most of the rights. Please don't sue me if I reuse this code in the future @SMU:(
 
 ## Project Status
 The project was created on 02.28.2020:09:48 and will continue to be updated throughout the semester of this course.
+
+### Helpful Links:
+If you are having trouble with Beautiful Soup, here is the link to the documentation:
+https://www.crummy.com/software/BeautifulSoup/bs4/doc/
+
+
