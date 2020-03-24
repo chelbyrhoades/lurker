@@ -3,7 +3,6 @@
 	of urllib; so Python is required to be updated to version 3.
 '''
 import requests
-import urllib
 import time
 import operator
 #from collections import defaultdict

@@ -5,7 +5,6 @@ A python-based web crawler designed for SMU CS 5337. It is given a preset list o
 ## Installation of Required libraries
 ```bash
   pip3 install requests
-  pip3 install urllib
   pip3 install bs4
 ```
 
