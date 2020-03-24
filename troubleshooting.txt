@@ -1,0 +1,29 @@
+Troubleshooting | Lurker
+
+This file was created in order to troubleshoot common problems with Lurker. 
+
+As a developer, I had trouble with several python libraries because of my computer. I'm operating on a Mac.
+
+****************************************
+Error 1: No module Named requests: 
+********v********************************
+The biggest issue starting out was gettting the requests library to work. I would run my code and get an error message saying that 'No module Named requests'.
+Although it was downloaded previously, the file could not find this library. 
+
+So, I tried:
+'sudo pip install requests'
+in order to install requests. It didn't work.
+I tried:
+'pip uninstall requests' and reinstalled it. 
+Didn't work. 
+
+The problem I was running into was that I was using pip, not pip3. This version of pip is compatible with Python3. Once I updated pip3, the file was able to locate the requests library.
+
+If Lurker is having this same issue, and the solution above doesn't work, here are a few links you can research that I used:
+
+https://stackoverflow.com/questions/17309288/importerror-no-module-named-requests
+
+https://stackoverflow.com/questions/19283271/how-to-uninstall-requests-2-0-0
+(uninstalling requests so you can reinstall it)
+
+********v********************************
