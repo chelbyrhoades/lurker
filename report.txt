@@ -1,37 +1,8 @@
-Report | Lurker
-
-This document is an ongoing report of the contents that Lurker finds. 
-
-Here are some questions that were assigned within the project rubric:
-
-a)	What is your definition of “word”?
-TBD
-b)	How many documents are indexed?
-TBD
-c)	How many words are indexed? 
-TBD
-d)	Generate the term-document frequency matrix.  [25 points]
-TBD
-
-Within the website given, it is determined that the 20 most commonly used words and their frequencies are:
-1.
-2.
-3.
-4.
-5.
-6.
-7.
-8.
-9.
-10.
-11.
-12.
-13.
-14.
-15.
-16.
-17.
-18.
-19.
-20.
-
+LURKER REPORT
+GENERATED ON: 2020-03-25
+Definition of "word":
+Number of documents indexed: 1
+Number of words indexed: 47
+Term-document frequency matrix:
+PUT HERE <>
+The top 20 most commonly used words: 

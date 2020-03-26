@@ -3,9 +3,9 @@ Chelby Rhoades
 ************************'''
 '''********IMPORTS***********'''
 import requests
+from datetime import date
 import time
 import operator
-#from collections import defaultdict
 from sklearn.feature_extraction.text import TfidfVectorizer #testing purposes only - I'm only using this to see the accuracy of my results.
 from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
 
@@ -24,14 +24,6 @@ def links(url):
     print("**** IN LINKS ****")
     print(finalLinks)
     return finalLinks
-
-
-def computeTF(wordDict, bow):
-	tfDict = {}
-	bowCount = len(bow)
-	for word, count in wordDict.items():
-		tfDict[word] = count/float(bowCount)
-	print(tfDict)
 
 def processLink(leUrl):
 	words = []
@@ -67,14 +59,23 @@ def processLink(leUrl):
 		# need a way to make sure it doesn't look in robot file
 
 
+#computing the TF
+def computeTF(wordDict, bow):
+	tfDict = {}
+	bowCount = len(bow)
+	for word, count in wordDict.items():
+		tfDict[word] = count/float(bowCount)
+	print(tfDict)
+
 '''******MAIN DRIVER*******'''
 #variables
-filteredWords = []
 foundURLS = []
 foundBanned = []
 alreadySearchedURLS = []
 unknownURLS = []
 otherURLS = []
+docsIndexed = 0
+#returnedWords is our main dictionary of words
 
 #our first url - the given website
 starterUrl = "https://s2.smu.edu/~fmoore"
@@ -83,7 +84,7 @@ bannedUrl = ["http://lyle.smu.edu",
 alreadySearchedURLS.append(starterUrl)
 returnedWords = processLink(starterUrl)
 newURLs = links(starterUrl)
-
+docsIndexed += 1
 
 #get rid of possible urls that try to get out of the directory
 for x in newURLs:
@@ -105,18 +106,18 @@ for n in newURLs:
 	else:
 		print("not found: {}".format(n))
 		unknownURLS.append(n)
-
-print(len(foundURLS))
+'''
 while len(foundURLS) > 0:
 	for i in foundURLS:
 		print("processing: {}".format(i))
 		if i in alreadySearchedURLS:
 			foundURLS.remove(i)
 		else:
-			newWords = processLink(i)
+			newWords = processLink(i)#its a pair
+			docsIndexed += 1
 			#NEED TO MAKE SURE ITS NOT ROBOT FILE
 			#if newWords['NULL'] != 'NULL': #make sure not to add robotFile
-			filteredWords.append(newWords)
+			returnedWords.update(newWords)
 			newURLs2 = links(i)
 			for a in newURLs2:
 				if a not in alreadySearchedURLS:
@@ -129,6 +130,7 @@ while len(foundURLS) > 0:
 
 print("THE UNKNOWNS")
 print(unknownURLS)
+'''
 #sortedPairs = dict(sorted(pairs.items(), key=operator.itemgetter(1),reverse=True))
 #print('Dictionary in descending order by value : ',sortedPairs)
 
@@ -137,8 +139,24 @@ print(unknownURLS)
 #tf is (count of word in the document) / (count of all words in the document)
 #computeTF(pairs, tokens) #pass the dictionary and the bag of words(our tokens)
 
+'''*********REPORT**********'''
+outFile = open('report.txt', 'w')
+today = date.today()
+outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
+outFile.write('\nDefinition of "word":')
+outFile.write('\nNumber of documents indexed: {}'.format(docsIndexed))
+outFile.write('\nNumber of words indexed: {}'.format(len(returnedWords)))
+outFile.write('\nTerm-document frequency matrix:\n')
+outFile.write("PUT HERE <>")
+outFile.write('\nThe top 20 most commonly used words: ')
+outFile.close()
+'''
 
+d)	Generate the term-document frequency matrix.  [25 points]
+TBD
 
+Within the website given, it is determined that the 20 most commonly used words and their frequencies are:
+'''
 
 '''*********TESTS**********'''
 #I'm only using the sklearn tfidf vectorizing library to see if mine is correct
