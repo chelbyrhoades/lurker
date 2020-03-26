@@ -53,6 +53,9 @@ def processLink(leUrl):
 	soup = BeautifulSoup(pagetext, "html.parser")
 	txt = soup.get_text()
 	tokens = txt.split()
+	totalWords = len(tokens)
+
+
 
 	for w in tokens:
 		if w == robotWord:
@@ -62,14 +65,19 @@ def processLink(leUrl):
 			words.append(w)
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
 	
+	urlWithWordCount = (dict(sip(words, totalWords)))
+
 	if robotFile == False:
 		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-		return pairs, words
+		return pairs, words, urlWithWordCount
 		# need a way to make sure it doesn't look in robot file
-
+	#urlWithWordCount = (dict(zip(firstTokens, )))
 
 #computing the TF
 def computeTF(wordDict, bow):
+	schoolName  = bow
+	print(schoolName)
+
 	tfDict = {}
 	bowCount = len(bow)
 	for word, count in wordDict.items():
@@ -103,6 +111,7 @@ alreadySearchedURLS = []
 unknownURLS = []
 otherURLS = []
 allWords = []
+
 docsIndexed = 0
 tf_idf = {}
 #returnedWords is our main dictionary of words
@@ -112,10 +121,12 @@ starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu"]
 alreadySearchedURLS.append(starterUrl)
-returnedWords, firstTokens = processLink(starterUrl)
+returnedWords, firstTokens, lenDict = processLink(starterUrl)
 allWords.append(firstTokens)
 print(firstTokens)
 newURLs = links(starterUrl)
+
+#(dict(zip(words, wordfreq))
 docsIndexed += 1
 
 #get rid of possible urls that try to get out of the directory
@@ -170,7 +181,7 @@ print(unknownURLS)
 '''*********TFIDF**********'''
 
 #tf is (count of word in the document) / (count of all words in the document)
-leTF = computeTF(returnedWords, allWords) #pass the dictionary and the bag of words(our tokens)
+leTF = computeTF(returnedWords, **lenDict) #pass the dictionary and the bag of words(our tokens)
 print(leTF)
 '''*********REPORT**********'''
 outFile = open('report.txt', 'w')
