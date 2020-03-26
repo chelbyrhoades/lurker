@@ -4,15 +4,18 @@ Chelby Rhoades
 '''********IMPORTS***********'''
 import requests
 import urllib
-from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
+from bs4 import BeautifulSoup 
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
 import lxml.html
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from datetime import date
 import time
 import operator
+import sys #getting input
 
-
+inputNum = int(input("Enter a number: "))
 
 session = requests.Session()
 retry = Retry(connect=3, backoff_factor=0.5)
@@ -40,7 +43,6 @@ def links(url):
 def processLink(leUrl):
 	words = []
 	wordfreq = []
-	robotWord = "robot"
 	ommited = ['-','i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 
 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have',
  'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
@@ -50,64 +52,24 @@ def processLink(leUrl):
 	time.sleep(5) #pause for a bit. We want to be polite.
 	
 	print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
-	print(leUrl)
-
+	print("got here3")
 	url = session.get(leUrl)
+	print("got here4")
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
 	title = soup.title.string
 	txt = soup.get_text()
 	tokens = txt.split()
-	print(len(tokens))
-
-
+	print("got here5")
 	for w in tokens:
-		if w == robotWord:
-			robotFile = True
-			break
 		if w not in ommited:
 			words.append(w)
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
-	#counts = dict()
 
-	#urlWithWordCount = (dict(zip(words, int(totalWords))))
+	pairs = (dict(zip(words, wordfreq))) # putting the two lists together
+	return pairs, words, title
 
-	if robotFile == False:
-		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-		return pairs, words, title#, urlWithWordCount
-		# need a way to make sure it doesn't look in robot file
-	#urlWithWordCount = (dict(zip(firstTokens, )))
-
-#computing the TF
-def computeTF(wordDict, bow):
-	schoolName  = bow
-	print(schoolName)
-
-	tfDict = {}
-	bowCount = len(bow)
-	for word, count in wordDict.items():
-		tfDict[word] = count/float(bowCount)
-	print(tfDict)
-
-def computeIDF(docList):
-	idfDict = {}
-	N = len(docsList)
-	idfDict = dict.fromkeys(docList[0].keys(), 0)
-	for doc in docList:
-		for word, val in doc.items():
-			if val > 0:
-				idfDict[word] += 1
-	for word, val in idfDict.items():
-		idfDict[word] = math.log10(N / float(val))
-
-	return idfDict
-
-def computeTFIDF(tfBow, idfs):
-	tfidf = {}
-	for word, val in tfBow.items():
-		tfidf[word] = val * idfs[word]
-	return tdidf
 
 '''******MAIN DRIVER*******'''
 #variables
@@ -117,6 +79,9 @@ alreadySearchedURLS = []
 unknownURLS = []
 otherURLS = []
 allWords = []
+dupes = [] #duplicates
+
+robotWord = "noindex"
 
 docsIndexed = 0
 tf_idf = {}
@@ -125,20 +90,20 @@ tf_idf = {}
 #our first url - the given website
 starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
-"mailto:fmoore@lyle.smu.edu"]
+"mailto:fmoore@lyle.smu.edu", "https://s2.smu.edu/~fmoore/dontgohere", "https://s2.smu.edu/~fmoore/dontgohere/badfile2.html", "https://s2.smu.edu/~fmoore/misc/noindex.html", "https://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020"] #I've gotten these files and they aren't supposed to be found.
+#the robots.txt file disallowed /dontgohere specifically
 
 #getting the title
 
 alreadySearchedURLS.append(starterUrl)
 returnedWords, firstTokens, leTitle = processLink(starterUrl)
-outFile.write("\nURL: {} TITLE: {}".format(starterUrl, leTitle))
-allWords.append(firstTokens)
-print(firstTokens)
-newURLs = links(starterUrl)
-dupes = [] #duplicates
 
-#(dict(zip(words, wordfreq))
-docsIndexed += 1
+if robotWord not in returnedWords:
+	outFile.write("\nURL: {} TITLE: {}".format(starterUrl, leTitle))
+	allWords.append(firstTokens)
+	print(firstTokens)
+	newURLs = links(starterUrl)
+	docsIndexed += 1
 
 #get rid of possible urls that try to get out of the directory
 for x in newURLs:
@@ -149,46 +114,47 @@ for y in foundBanned:
 
 print("length of newURLS : {}".format(len(newURLs)))
 for n in newURLs:
-	print(n)
 	# (.txt, .htm, .html, .php). 
 	if n[-3:] == "htm" or n[-3:] == "txt" or n[-4:] == "html" or n[-3:] == "php":
 		#https://s2.smu.edu/~fmoore/
 		putTogether = "https://s2.smu.edu/~fmoore/" + n
+		print(n)
 		print("added : {}".format(putTogether))
 		
 		foundURLS.append(putTogether)
 
 	else:
 		unknownURLS.append(n)
-'''
-while len(foundURLS) > 0:
-	for i in foundURLS:
-		print("processing: {}".format(i))
-		if i in alreadySearchedURLS:
-			foundURLS.remove(i)
-		else:
-			time.sleep(2)
-			newWords, secondTokens, leTitle2 = processLink(i) #its a pair returned
-			outFile.write("URL: {} TITLE: {}".format(i, leTitle2))
-			docsIndexed += 1
+if inputNum	> foundURLS:
+	print("I didn't find enough urls for that:(")
+	rangeOfURLS = foundURLS
+if inputNum < foundURLS:
+	rangeOfURLS = foundURLS[:inputNum]
+
+for i in rangeOfURLS: #already searched initial one
+
+	print("processing: {}".format(i))
+	if i in alreadySearchedURLS:
+		dupes.append(i) #duplicate document
+	else:
+		time.sleep(2)
+		print("got here1")
+		newWords, secondTokens, leTitle2 = processLink(i)
+		print("got here2")
+		outFile.write("URL: {} TITLE: {}".format(i, leTitle2))
+		docsIndexed += 1
 			#NEED TO MAKE SURE ITS NOT ROBOT FILE
 			#if newWords['NULL'] != 'NULL': #make sure not to add robotFile
-			returnedWords.update(newWords)
-			newURLs2 = links(i)
-			for a in newURLs2:
-				if a not in alreadySearchedURLS:
-					print("added")
-					foundURLS.append(a)
-				else:
-					dupes.append(a)
+		returnedWords.update(newWords)
+		newURLs2 = links(i)
+		for a in newURLs2:
+			if a not in alreadySearchedURLS:
+				print("added")
+				foundURLS.append(a)
+			else:
+				dupes.append(a)
 
-		#remove it so we don't have an infinite loop
-		alreadySearchedURLS.append(i)
-		foundURLS.remove(i)
-
-print("THE UNKNOWNS")
-print(unknownURLS)
-'''
+	alreadySearchedURLS.append(i)
 
 #print('Dictionary in descending order by value : ',sortedPairs)
 
@@ -220,7 +186,7 @@ outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is
 outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\n\nNumber of words indexed: {}'.format(len(returnedWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
-outFile.write("PUT HERE <>")
+outFile.write("Shown in excel file")
 outFile.write('\n\nThe top 20 most commonly used words: \n')
 #outFile.write(top20Items)
 outFile.close()

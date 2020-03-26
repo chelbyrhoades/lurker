@@ -1,0 +1,1 @@
+TFIDF is an information retrieval technique used to find how unique a document's contents are. TF stands for term frequency, and IDF stands for inverse document frequency. By multiplying these together, we are able to see the weight of each word. The higher the tfidf score, the more unique a word is. 

@@ -8,6 +8,7 @@ A python-based web crawler designed for SMU CS 5337. It is given a preset list o
   pip3 install bs4
   pip3 install mechanize
   pip3 install urllib
+  pip3 install pandas
 ```
 
 ## Running the project
@@ -17,7 +18,8 @@ In order to run this project, the system must be updated to Python3. A tutorial 
   python3 lurker.py
 ```
 ## Getting the Results
-All results are displayed in the 'report.txt' document.
+All results, other than tfidf matrix, are displayed in the 'report.txt' document.
+The tfidf matrix is in 'Matrix.xlxs'
 
 ## Usage
 For the project:
