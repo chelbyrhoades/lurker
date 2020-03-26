@@ -4,14 +4,14 @@ Chelby Rhoades
 '''********IMPORTS***********'''
 import requests
 import urllib
+from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
+import lxml.html
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from datetime import date
 import time
 import operator
-from sklearn.feature_extraction.text import TfidfVectorizer #testing purposes only - I'm only using this to see the accuracy of my results.
-from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
-import lxml.html
+
 
 
 session = requests.Session()
@@ -225,18 +225,3 @@ outFile.write('\n\nThe top 20 most commonly used words: \n')
 #outFile.write(top20Items)
 outFile.close()
 '''
-
-d)	Generate the term-document frequency matrix.  [25 points]
-TBD
-
-Within the website given, it is determined that the 20 most commonly used words and their frequencies are:
-'''
-
-'''*********TESTS**********'''
-#I'm only using the sklearn tfidf vectorizing library to see if mine is correct
-'''tfidf = TfidfVectorizer()
-response = tfidf.fit_transform(words)
-feature_names = tfidf.get_feature_names()
-for col in response.nonzero()[1]:
-    print (feature_names[col], ' - ', response[0, col])'''
-

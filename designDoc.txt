@@ -2,6 +2,12 @@ Design Doc | Lurker
 
 Key Architecture Explanation:
 
+This crawler implements:
+1. Looking at a web address for specific links (text file types)
+2. Making sure none of the links are disallowed.
+3. Scanning all allowed text and performing tf/idf on it.
+4. Generating a report
+
 ****************************************************************
 Data Structures used:
 
