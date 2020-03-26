@@ -3,6 +3,7 @@ Chelby Rhoades
 ************************'''
 '''********IMPORTS***********'''
 import requests
+import urllib
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from datetime import date
@@ -10,7 +11,8 @@ import time
 import operator
 from sklearn.feature_extraction.text import TfidfVectorizer #testing purposes only - I'm only using this to see the accuracy of my results.
 from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
-import mechanize
+import lxml.html
+
 
 session = requests.Session()
 retry = Retry(connect=3, backoff_factor=0.5)
@@ -24,13 +26,6 @@ today = date.today()
 outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
 
 '''*******FUNCTIONS********'''
-#find all links on the page
-def getTitle(url):
-	br = mechanize.Browser()
-	br.open('http://www.imdb.com/title/tt0108778/')
-	tree = fromstring(r.content)
-	leTitle = br.title()
-	return leTitle
 
 def links(url):
     html = requests.get(url).content
@@ -40,8 +35,6 @@ def links(url):
     finalLinks = set()
     for link in links:
         finalLinks.add(link.attrs['href'])
-    print("**** IN LINKS ****")
-    print(finalLinks)
     return finalLinks
 
 def processLink(leUrl):
@@ -63,6 +56,7 @@ def processLink(leUrl):
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
+	title = soup.title.string
 	txt = soup.get_text()
 	tokens = txt.split()
 	print(len(tokens))
@@ -81,7 +75,7 @@ def processLink(leUrl):
 
 	if robotFile == False:
 		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-		return pairs, words#, urlWithWordCount
+		return pairs, words, title#, urlWithWordCount
 		# need a way to make sure it doesn't look in robot file
 	#urlWithWordCount = (dict(zip(firstTokens, )))
 
@@ -134,11 +128,10 @@ bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu"]
 
 #getting the title
-title = getTitle(starterUrl)
 
 alreadySearchedURLS.append(starterUrl)
-returnedWords, firstTokens= processLink(starterUrl)
-outFile.write("URL: {} TITLE: {}".format(starterUrl, title))
+returnedWords, firstTokens, leTitle = processLink(starterUrl)
+outFile.write("\nURL: {} TITLE: {}".format(starterUrl, leTitle))
 allWords.append(firstTokens)
 print(firstTokens)
 newURLs = links(starterUrl)
@@ -162,8 +155,7 @@ for n in newURLs:
 		#https://s2.smu.edu/~fmoore/
 		putTogether = "https://s2.smu.edu/~fmoore/" + n
 		print("added : {}".format(putTogether))
-		title2 = getTitle(putTogether)
-		outFile.write("URL: {} TITLE: {}".format(putTogether, title2))
+		
 		foundURLS.append(putTogether)
 
 	else:
@@ -176,7 +168,8 @@ while len(foundURLS) > 0:
 			foundURLS.remove(i)
 		else:
 			time.sleep(2)
-			newWords = processLink(i) #its a pair returned
+			newWords, secondTokens, leTitle2 = processLink(i) #its a pair returned
+			outFile.write("URL: {} TITLE: {}".format(i, leTitle2))
 			docsIndexed += 1
 			#NEED TO MAKE SURE ITS NOT ROBOT FILE
 			#if newWords['NULL'] != 'NULL': #make sure not to add robotFile
@@ -202,30 +195,34 @@ print(unknownURLS)
 '''*********TFIDF**********'''
 
 #tf is (count of word in the document) / (count of all words in the document)
-leTF = computeTF(returnedWords, **lenDict) #pass the dictionary and the bag of words(our tokens)
-print(leTF)
+#leTF = computeTF(returnedWords, **lenDict) #pass the dictionary and the bag of words(our tokens)
+#print(leTF)
 
 
 
 '''*********REPORT**********'''
-sortedPairs = dict(sorted(allWords.items(), key=operator.itemgetter(1),reverse=True))
-top20Items = take(20, sortedPairs.iteritems())
+#sortedPairs = dict(sorted(allWords.items(), key=operator.itemgetter(1),reverse=True))
+#top20Items = take(20, sortedPairs.iteritems())
 #this is for the top 20 ^^^
 
 #URL AND TITLES
 outFile.write('\nDuplicate documents found: \n')
-outFile.write(dupes)
+for i in dupes:
+	outFile.write(str(i) + "\n")
+#outFile.write(dupes)
 outFile.write('\nBroken Links found: \n')
 
 outFile.write('\nNon-texfiles Found: \n')
-outFile.write(unknownURLS)
+for u in unknownURLS:
+	outFile.write(str(u) + "\n")
+#outFile.write(unknownURLS)
 outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
-outFile.write('\nNumber of documents indexed: {}'.format(docsIndexed))
-outFile.write('\nNumber of words indexed: {}'.format(len(returnedWords)))
-outFile.write('\nTerm-document frequency matrix:\n')
+outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
+outFile.write('\n\nNumber of words indexed: {}'.format(len(returnedWords)))
+outFile.write('\n\nTerm-document frequency matrix:\n')
 outFile.write("PUT HERE <>")
-outFile.write('\nThe top 20 most commonly used words: \n')
-outFile.write(top20Items)
+outFile.write('\n\nThe top 20 most commonly used words: \n')
+#outFile.write(top20Items)
 outFile.close()
 '''
 

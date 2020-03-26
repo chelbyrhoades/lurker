@@ -7,6 +7,7 @@ A python-based web crawler designed for SMU CS 5337. It is given a preset list o
   pip3 install requests
   pip3 install bs4
   pip3 install mechanize
+  pip3 install urllib
 ```
 
 ## Running the project
