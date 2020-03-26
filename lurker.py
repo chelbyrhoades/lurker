@@ -53,8 +53,7 @@ def processLink(leUrl):
 	soup = BeautifulSoup(pagetext, "html.parser")
 	txt = soup.get_text()
 	tokens = txt.split()
-	totalWords = len(tokens)
-
+	print(len(tokens))
 
 
 	for w in tokens:
@@ -64,12 +63,13 @@ def processLink(leUrl):
 		if w not in ommited:
 			words.append(w)
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
-	
-	urlWithWordCount = (dict(sip(words, totalWords)))
+	#counts = dict()
+
+	#urlWithWordCount = (dict(zip(words, int(totalWords))))
 
 	if robotFile == False:
 		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-		return pairs, words, urlWithWordCount
+		return pairs, words#, urlWithWordCount
 		# need a way to make sure it doesn't look in robot file
 	#urlWithWordCount = (dict(zip(firstTokens, )))
 
@@ -121,7 +121,7 @@ starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu"]
 alreadySearchedURLS.append(starterUrl)
-returnedWords, firstTokens, lenDict = processLink(starterUrl)
+returnedWords, firstTokens= processLink(starterUrl)
 allWords.append(firstTokens)
 print(firstTokens)
 newURLs = links(starterUrl)
@@ -147,7 +147,6 @@ for n in newURLs:
 		foundURLS.append(putTogether)
 
 	else:
-		print("not found: {}".format(n))
 		unknownURLS.append(n)
 '''
 while len(foundURLS) > 0:
@@ -175,7 +174,7 @@ while len(foundURLS) > 0:
 print("THE UNKNOWNS")
 print(unknownURLS)
 '''
-#sortedPairs = dict(sorted(pairs.items(), key=operator.itemgetter(1),reverse=True))
+
 #print('Dictionary in descending order by value : ',sortedPairs)
 
 '''*********TFIDF**********'''
@@ -183,16 +182,23 @@ print(unknownURLS)
 #tf is (count of word in the document) / (count of all words in the document)
 leTF = computeTF(returnedWords, **lenDict) #pass the dictionary and the bag of words(our tokens)
 print(leTF)
+
+
+
 '''*********REPORT**********'''
+sortedPairs = dict(sorted(allWords.items(), key=operator.itemgetter(1),reverse=True))
+top20Items = take(20, sortedPairs.iteritems())
+#this is for the top 20 ^^^
 outFile = open('report.txt', 'w')
 today = date.today()
 outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
-outFile.write('\nDefinition of "word":')
+outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
 outFile.write('\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\nNumber of words indexed: {}'.format(len(returnedWords)))
 outFile.write('\nTerm-document frequency matrix:\n')
 outFile.write("PUT HERE <>")
-outFile.write('\nThe top 20 most commonly used words: ')
+outFile.write('\nThe top 20 most commonly used words: \n')
+outFile.write(top20Items)
 outFile.close()
 '''
 
