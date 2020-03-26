@@ -3,12 +3,19 @@ Chelby Rhoades
 ************************'''
 '''********IMPORTS***********'''
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from datetime import date
 import time
 import operator
 from sklearn.feature_extraction.text import TfidfVectorizer #testing purposes only - I'm only using this to see the accuracy of my results.
 from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
 
+session = requests.Session()
+retry = Retry(connect=3, backoff_factor=0.5)
+adapter = HTTPAdapter(max_retries=retry)
+session.mount('http://', adapter)
+session.mount('https://', adapter)
 
 
 '''*******FUNCTIONS********'''
@@ -39,7 +46,9 @@ def processLink(leUrl):
 	
 	print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
 	print(leUrl)
-	url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
+
+	url = session.get(leUrl)
+	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
 	txt = soup.get_text()
@@ -55,7 +64,7 @@ def processLink(leUrl):
 	
 	if robotFile == False:
 		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-		return pairs
+		return pairs, words
 		# need a way to make sure it doesn't look in robot file
 
 
@@ -67,6 +76,25 @@ def computeTF(wordDict, bow):
 		tfDict[word] = count/float(bowCount)
 	print(tfDict)
 
+def computeIDF(docList):
+	idfDict = {}
+	N = len(docsList)
+	idfDict = dict.fromkeys(docList[0].keys(), 0)
+	for doc in docList:
+		for word, val in doc.items():
+			if val > 0:
+				idfDict[word] += 1
+	for word, val in idfDict.items():
+		idfDict[word] = math.log10(N / float(val))
+
+	return idfDict
+
+def computeTFIDF(tfBow, idfs):
+	tfidf = {}
+	for word, val in tfBow.items():
+		tfidf[word] = val * idfs[word]
+	return tdidf
+
 '''******MAIN DRIVER*******'''
 #variables
 foundURLS = []
@@ -74,7 +102,9 @@ foundBanned = []
 alreadySearchedURLS = []
 unknownURLS = []
 otherURLS = []
+allWords = []
 docsIndexed = 0
+tf_idf = {}
 #returnedWords is our main dictionary of words
 
 #our first url - the given website
@@ -82,7 +112,9 @@ starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu"]
 alreadySearchedURLS.append(starterUrl)
-returnedWords = processLink(starterUrl)
+returnedWords, firstTokens = processLink(starterUrl)
+allWords.append(firstTokens)
+print(firstTokens)
 newURLs = links(starterUrl)
 docsIndexed += 1
 
@@ -113,7 +145,8 @@ while len(foundURLS) > 0:
 		if i in alreadySearchedURLS:
 			foundURLS.remove(i)
 		else:
-			newWords = processLink(i)#its a pair
+			time.sleep(2)
+			newWords = processLink(i) #its a pair returned
 			docsIndexed += 1
 			#NEED TO MAKE SURE ITS NOT ROBOT FILE
 			#if newWords['NULL'] != 'NULL': #make sure not to add robotFile
@@ -137,8 +170,8 @@ print(unknownURLS)
 '''*********TFIDF**********'''
 
 #tf is (count of word in the document) / (count of all words in the document)
-#computeTF(pairs, tokens) #pass the dictionary and the bag of words(our tokens)
-
+leTF = computeTF(returnedWords, allWords) #pass the dictionary and the bag of words(our tokens)
+print(leTF)
 '''*********REPORT**********'''
 outFile = open('report.txt', 'w')
 today = date.today()

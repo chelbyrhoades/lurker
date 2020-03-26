@@ -4,8 +4,15 @@ In order to retrieve data, web crawlers need to implement politeness so that the
 
 Most websites use a the robots exclusion protocol in order to identify which parts that the web crawler is unable to access. For Lurker, the website in which it crawls will have this protocol.
 
-************
-This document is on Version 1.0
-Author: Chelby Rhoades
-Initial Creation: March 5, 2020
-Last edit: March 5, 2020
+Without implementing politeness, this error is common:
+"Max retries exceeded with URL in requests"
+I, the developer, receieved this error and looked further into implementing a stronger politeness policy.
+Thanks to some stack overflow users, I was able to add
+
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+along with a session for the requests.
+The Requests library has a great backoff feature that helps websites not hate crawlers.
+
+Here's the link to the stack overflow question that helped me resolve my problem:
+https://stackoverflow.com/questions/23013220/max-retries-exceeded-with-url-in-requests
