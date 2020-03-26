@@ -30,4 +30,12 @@ https://stackoverflow.com/questions/19283271/how-to-uninstall-requests-2-0-0
 Installing urllib
 https://stackoverflow.com/questions/47730259/installing-urllib-in-python3-6
 
+
+****************************************
+Error 2: Max retries exceeded with URL in requests
 ********v********************************
+Back off from the website. You don't want to overload it and you aren't being polite. Where is your Southern hospitality?
+This is further explaned in the 'politeness.txt' file.
+
+How to fix this issue
+https://stackoverflow.com/questions/23013220/max-retries-exceeded-with-url-in-requests

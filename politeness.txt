@@ -7,6 +7,7 @@ Most websites use a the robots exclusion protocol in order to identify which par
 Without implementing politeness, this error is common:
 "Max retries exceeded with URL in requests"
 I, the developer, receieved this error and looked further into implementing a stronger politeness policy.
+
 Thanks to some stack overflow users, I was able to add
 
 from requests.adapters import HTTPAdapter
