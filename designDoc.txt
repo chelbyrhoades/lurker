@@ -2,12 +2,14 @@ Design Doc | Lurker
 
 Key Architecture Explanation:
 
-
+****************************************************************
 Data Structures used:
 
 List : for storing urls
 Deeper explanation:
 	Lists can store objects in specific orders; making it easy to index and iterate over.
+
 Dictionary : for storing the words and their document frequencies
 Deeper explanation:
 	Storing two separate lists, words and frequencies, into a dictionary structure implements the same as a hash table. You can search or sort these by key or value. I'm using this to store keys and values and then sorting by the values to find the top words with the largest document frequencies. 
+****************************************************************
