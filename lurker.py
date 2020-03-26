@@ -224,4 +224,4 @@ outFile.write("PUT HERE <>")
 outFile.write('\n\nThe top 20 most commonly used words: \n')
 #outFile.write(top20Items)
 outFile.close()
-'''
+
