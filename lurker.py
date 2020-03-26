@@ -21,6 +21,8 @@ def links(url):
     finalLinks = set()
     for link in links:
         finalLinks.add(link.attrs['href'])
+    print("**** IN LINKS ****")
+    print(finalLinks)
     return finalLinks
 
 
@@ -31,7 +33,9 @@ def computeTF(wordDict, bow):
 		tfDict[word] = count/float(bowCount)
 	print(tfDict)
 
-def processLink(urlList):
+def processLink(leUrl):
+	words = []
+	wordfreq = []
 	robotWord = "robot"
 	ommited = ['-','i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 
 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have',
@@ -40,12 +44,14 @@ def processLink(urlList):
 
 	robotFile = False
 	time.sleep(5) #pause for a bit. We want to be polite.
-	for i in urlList:
-		url = requests.get(i)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
-		pagetext = url.text
-		soup = BeautifulSoup(pagetext, "html.parser")
-		txt = soup.get_text()
-		tokens = txt.split()
+	
+	print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
+	print(leUrl)
+	url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
+	pagetext = url.text
+	soup = BeautifulSoup(pagetext, "html.parser")
+	txt = soup.get_text()
+	tokens = txt.split()
 
 	for w in tokens:
 		if w == robotWord:
@@ -56,35 +62,80 @@ def processLink(urlList):
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
 	
 	if robotFile == False:
-		return pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-	else:
-		return pairs = (dict(zip("NULL", "NULL")))
-
+		pairs = (dict(zip(words, wordfreq))) # putting the two lists together
+		return pairs
+		# need a way to make sure it doesn't look in robot file
 
 
 '''******MAIN DRIVER*******'''
 #variables
-words = []
-wordfreq = []
+filteredWords = []
 foundURLS = []
+foundBanned = []
 alreadySearchedURLS = []
-#STOP WORDS LIST INSIDE OF A LIST
+unknownURLS = []
+otherURLS = []
 
-#LET'S START!
 #our first url - the given website
-starterUrl = ["https://s2.smu.edu/~fmoore"]
-alreadySearchedURLS.insert(starterUrl[0])
-
+starterUrl = "https://s2.smu.edu/~fmoore"
+bannedUrl = ["http://lyle.smu.edu",
+"mailto:fmoore@lyle.smu.edu"]
+alreadySearchedURLS.append(starterUrl)
 returnedWords = processLink(starterUrl)
+newURLs = links(starterUrl)
 
 
+#get rid of possible urls that try to get out of the directory
+for x in newURLs:
+	if x in bannedUrl:
+		foundBanned.append(x)
+for y in foundBanned:
+	newURLs.remove(y)
+
+print("length of newURLS : {}".format(len(newURLs)))
+for n in newURLs:
+	print(n)
+	# (.txt, .htm, .html, .php). 
+	if n[-3:] == "htm" or n[-3:] == "txt" or n[-4:] == "html" or n[-3:] == "php":
+		#https://s2.smu.edu/~fmoore/
+		putTogether = "https://s2.smu.edu/~fmoore/" + n
+		print("added : {}".format(putTogether))
+		foundURLS.append(putTogether)
+
+	else:
+		print("not found: {}".format(n))
+		unknownURLS.append(n)
+
+print(len(foundURLS))
+while len(foundURLS) > 0:
+	for i in foundURLS:
+		print("processing: {}".format(i))
+		if i in alreadySearchedURLS:
+			foundURLS.remove(i)
+		else:
+			newWords = processLink(i)
+			#NEED TO MAKE SURE ITS NOT ROBOT FILE
+			#if newWords['NULL'] != 'NULL': #make sure not to add robotFile
+			filteredWords.append(newWords)
+			newURLs2 = links(i)
+			for a in newURLs2:
+				if a not in alreadySearchedURLS:
+					print("added")
+					foundURLS.append(a)
+
+		#remove it so we don't have an infinite loop
+		alreadySearchedURLS.append(i)
+		foundURLS.remove(i)
+
+print("THE UNKNOWNS")
+print(unknownURLS)
 #sortedPairs = dict(sorted(pairs.items(), key=operator.itemgetter(1),reverse=True))
 #print('Dictionary in descending order by value : ',sortedPairs)
 
-
+'''*********TFIDF**********'''
 
 #tf is (count of word in the document) / (count of all words in the document)
-computeTF(pairs, tokens) #pass the dictionary and the bag of words(our tokens)
+#computeTF(pairs, tokens) #pass the dictionary and the bag of words(our tokens)
 
 
 
