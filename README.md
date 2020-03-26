@@ -14,9 +14,10 @@ In order to run this project, the system must be updated to Python3. A tutorial 
 ```bash
   python3 lurker.py
 ```
+## Getting the Results
+All results are displayed in the 'report.txt' document.
 
 ## Usage
-
 For the project:
 The Web Crawler was developed to only be used on:
 http://lyle.smu.edu/~fmoore   aka   https://s2.smu.edu/~fmoore
@@ -29,10 +30,8 @@ The required input to the program is 'N', which limits the number of retrieved p
 Ideas to be released int the future - TBD
 
 #### Key Architecture
-There is an image uploaded to this github that shows a visual representation of this web crawler. A file called 'Design Doc' covers these architectures, as well as main data structures used within the project.
-#### Identify and describe your major data structures
-  Lists are used throughout the project. 
-  TBD on more major data structures
+A file called 'Design Doc' covers the main data structures used within the project.
+
 #### Politeness
    To avoid overloading a website, a politeness policy is used. The performance of a site is heavily affected while a web crawler downloads a portion. Servers have to handle requests of the viewers of the site and a web crawler could potentially overload it. Administrators are able to indicate which parts of the website that cannot be accessed by the crawler. 
    To implement politness, Lurker uses an interval that restricts itself from overloading the server.

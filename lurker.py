@@ -10,6 +10,7 @@ import time
 import operator
 from sklearn.feature_extraction.text import TfidfVectorizer #testing purposes only - I'm only using this to see the accuracy of my results.
 from bs4 import BeautifulSoup #THIS IS ONE OF THE MOST USED ONES
+import mechanize
 
 session = requests.Session()
 retry = Retry(connect=3, backoff_factor=0.5)
@@ -18,8 +19,19 @@ session.mount('http://', adapter)
 session.mount('https://', adapter)
 
 
+outFile = open('report.txt', 'w')
+today = date.today()
+outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
+
 '''*******FUNCTIONS********'''
 #find all links on the page
+def getTitle(url):
+	br = mechanize.Browser()
+	br.open('http://www.imdb.com/title/tt0108778/')
+	tree = fromstring(r.content)
+	leTitle = br.title()
+	return leTitle
+
 def links(url):
     html = requests.get(url).content
     bsObj = BeautifulSoup(html, 'lxml')
@@ -120,11 +132,17 @@ tf_idf = {}
 starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu"]
+
+#getting the title
+title = getTitle(starterUrl)
+
 alreadySearchedURLS.append(starterUrl)
 returnedWords, firstTokens= processLink(starterUrl)
+outFile.write("URL: {} TITLE: {}".format(starterUrl, title))
 allWords.append(firstTokens)
 print(firstTokens)
 newURLs = links(starterUrl)
+dupes = [] #duplicates
 
 #(dict(zip(words, wordfreq))
 docsIndexed += 1
@@ -144,6 +162,8 @@ for n in newURLs:
 		#https://s2.smu.edu/~fmoore/
 		putTogether = "https://s2.smu.edu/~fmoore/" + n
 		print("added : {}".format(putTogether))
+		title2 = getTitle(putTogether)
+		outFile.write("URL: {} TITLE: {}".format(putTogether, title2))
 		foundURLS.append(putTogether)
 
 	else:
@@ -166,6 +186,8 @@ while len(foundURLS) > 0:
 				if a not in alreadySearchedURLS:
 					print("added")
 					foundURLS.append(a)
+				else:
+					dupes.append(a)
 
 		#remove it so we don't have an infinite loop
 		alreadySearchedURLS.append(i)
@@ -189,9 +211,14 @@ print(leTF)
 sortedPairs = dict(sorted(allWords.items(), key=operator.itemgetter(1),reverse=True))
 top20Items = take(20, sortedPairs.iteritems())
 #this is for the top 20 ^^^
-outFile = open('report.txt', 'w')
-today = date.today()
-outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
+
+#URL AND TITLES
+outFile.write('\nDuplicate documents found: \n')
+outFile.write(dupes)
+outFile.write('\nBroken Links found: \n')
+
+outFile.write('\nNon-texfiles Found: \n')
+outFile.write(unknownURLS)
 outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
 outFile.write('\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\nNumber of words indexed: {}'.format(len(returnedWords)))
