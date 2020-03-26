@@ -52,22 +52,23 @@ def processLink(leUrl):
 	time.sleep(5) #pause for a bit. We want to be polite.
 	
 	print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
-	print("got here3")
+
 	url = session.get(leUrl)
-	print("got here4")
+
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
 	title = soup.title.string
 	txt = soup.get_text()
 	tokens = txt.split()
-	print("got here5")
+
 	for w in tokens:
 		if w not in ommited:
 			words.append(w)
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
 
 	pairs = (dict(zip(words, wordfreq))) # putting the two lists together
+	print("GOT HERE")
 	return pairs, words, title
 
 
@@ -117,18 +118,20 @@ for n in newURLs:
 	# (.txt, .htm, .html, .php). 
 	if n[-3:] == "htm" or n[-3:] == "txt" or n[-4:] == "html" or n[-3:] == "php":
 		#https://s2.smu.edu/~fmoore/
-		putTogether = "https://s2.smu.edu/~fmoore/" + n
-		print(n)
+		if n[-8:] == "cow1.txt" or n[-8:] == "cow2.txt" or n[-8:] == "cow3.txt" or n[-8:] == "cow4.txt":
+			putTogether = "https://s2.smu.edu/~fmoore/textfiles/" + n
+		else:
+			putTogether = "https://s2.smu.edu/~fmoore/" + n
+		print(putTogether + " LOOKING ")
 		print("added : {}".format(putTogether))
-		
 		foundURLS.append(putTogether)
 
 	else:
 		unknownURLS.append(n)
-if inputNum	> foundURLS:
+if inputNum	> len(foundURLS):
 	print("I didn't find enough urls for that:(")
 	rangeOfURLS = foundURLS
-if inputNum < foundURLS:
+if inputNum < len(foundURLS):
 	rangeOfURLS = foundURLS[:inputNum]
 
 for i in rangeOfURLS: #already searched initial one
@@ -138,9 +141,7 @@ for i in rangeOfURLS: #already searched initial one
 		dupes.append(i) #duplicate document
 	else:
 		time.sleep(2)
-		print("got here1")
 		newWords, secondTokens, leTitle2 = processLink(i)
-		print("got here2")
 		outFile.write("URL: {} TITLE: {}".format(i, leTitle2))
 		docsIndexed += 1
 			#NEED TO MAKE SURE ITS NOT ROBOT FILE
