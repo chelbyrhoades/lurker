@@ -155,7 +155,7 @@ while docsIndexed < inputNum:
 			print("found a file we don't wanna mess with (could be for various reasons)")
 			break
 		else:
-			print(x + " is our current person")
+			print(x + " is our currently considered address")
 			x = starterUrl + "/" + x
 			alreadySearchedURLS.append(x)
 			returnedWords, firstTokens, leTitle = processLink(x)
@@ -175,13 +175,12 @@ while docsIndexed < inputNum:
 			newURLs2 = links(x)
 			for x in newURLs2:
 				print('reviewing {}'.format(x))
-				if x in bannedUrl or x[10:] == 'dontgohere': #we don't want that file
+				if x in bannedUrl or x == 'dontgohere/badfile1.html': #we don't want that file
 					foundBanned.append(x)
 				elif x[-3:] == "pdf" or x[-4:] == "xlsx" or x[-4:] == "pptx":
 					unknownURLS.append(x)
 				elif x[-5:] == "here/":#/dontgohere/
 					robotFile = True
-
 				else:
 					processedURLs.append(x)
 			if len(processedURLs) > 1:
@@ -276,7 +275,7 @@ outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
 outFile.write('The tfidf is printed to the terminal until further notice')
-outFile.write('\n\nThe top 20 most commonly used words: \n')
+outFile.write('\n\nThe top 20 most commonly used words and the amount of times that they are used: \n')
 #here's where collections comes into play
 Counter = Counter(allWords)
 most_occur = Counter.most_common(20)
