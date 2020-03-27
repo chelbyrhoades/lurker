@@ -4,6 +4,7 @@ Chelby Rhoades
 '''********IMPORTS***********'''
 import requests
 import numpy as np
+from collections import Counter 
 import urllib
 from bs4 import BeautifulSoup 
 import pandas as pd
@@ -275,6 +276,11 @@ outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
 outFile.write('The tfidf is printed to the terminal until further notice')
 outFile.write('\n\nThe top 20 most commonly used words: \n')
-#outFile.write(top20Items)
+#here's where collections comes into play
+Counter = Counter(allWords)
+most_occur = Counter.most_common(20)
+for t in most_occur:
+  outFile.write(' '.join(str(s) for s in t) + '\n')
+
 outFile.close()
 
