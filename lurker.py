@@ -60,7 +60,8 @@ def processLink(leUrl):
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
-	title = soup.title.string
+	#title = soup.title.string
+	title = "currently error"
 	txt = soup.get_text()
 	tokens = txt.split()
 
@@ -141,7 +142,7 @@ for n in newURLs:
 			robotFile = True
 		else:
 			processedURLs.append(n)
-
+count = 1
 while docsIndexed < inputNum:
 		for pro in processedURLs:
 			if pro in bannedUrl:
@@ -153,16 +154,14 @@ while docsIndexed < inputNum:
 		for tok in firstTokens:
 			allWords.append(tok)
 		docsIndexed += 1
-		doctemp = "doc" + str(docsIndexed)
+		togetherString = ""
 		togetherString = putTokensInOne(firstTokens)
 		#df1.insert(docsIndexed, {doctemp: [togetherString]})
-	
-		#sLength = len(df1['a'])
-		#df1[doctemp] = pd.Series(np.random.randn(sLength), index=df1.index)
-		#({doctemp: [togetherString]})
-		#df1 = df1.assign(doctemp=doctemp.values)
-		#doctemp = [togetherString]
-		df1[doctemp] = [togetherString]
+		#df1 = pd.DataFrame.insert(0, })#{doctemp: [togetherString]})
+		#df1.insert(0, 'Name', 'abc')
+		name = 'doc' + str(count)
+		df1.insert(0, name, togetherString)
+		count += 1
 		#df1[doctemp] = doctemp
 		newURLs2 = links(starterUrl)
 		for x in newURLs2:
