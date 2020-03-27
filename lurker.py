@@ -3,9 +3,11 @@ Chelby Rhoades
 ************************'''
 '''********IMPORTS***********'''
 import requests
+import numpy as np
 import urllib
 from bs4 import BeautifulSoup 
 import pandas as pd
+import openpyxl
 from sklearn.feature_extraction.text import TfidfVectorizer
 import lxml.html
 from requests.adapters import HTTPAdapter
@@ -51,7 +53,7 @@ def processLink(leUrl):
 	robotFile = False
 	time.sleep(5) #pause for a bit. We want to be polite.
 	
-	print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
+	#print("INSIDE PROCESSLINK : requesting: {}".format(leUrl))
 
 	url = session.get(leUrl)
 
@@ -68,9 +70,21 @@ def processLink(leUrl):
 			wordfreq.append(tokens.count(w)) #this is counting how many times the words appear in the document
 
 	pairs = (dict(zip(words, wordfreq))) # putting the two lists together
-	print("GOT HERE")
 	return pairs, words, title
 
+
+def broken(url) :
+	if requests.get(url).status_code == 200:
+		return False
+	else:
+		return True
+
+
+def putTokensInOne(listTok):
+	leString = ""
+	for e in listTok:
+		leString = leString + e + " "
+	return leString
 
 '''******MAIN DRIVER*******'''
 #variables
@@ -81,7 +95,7 @@ unknownURLS = []
 otherURLS = []
 allWords = []
 dupes = [] #duplicates
-
+blink = [] #the broken ones
 robotWord = "noindex"
 
 docsIndexed = 0
@@ -98,13 +112,20 @@ bannedUrl = ["http://lyle.smu.edu",
 
 alreadySearchedURLS.append(starterUrl)
 returnedWords, firstTokens, leTitle = processLink(starterUrl)
+doctemp = "doc" + str(docsIndexed)
+togetherString = putTokensInOne(firstTokens)
+df1 = pd.DataFrame({doctemp: [togetherString]})
+
+
 
 if robotWord not in returnedWords:
 	outFile.write("\nURL: {} TITLE: {}".format(starterUrl, leTitle))
-	allWords.append(firstTokens)
-	print(firstTokens)
+	for tok in firstTokens:
+		allWords.append(tok)
 	newURLs = links(starterUrl)
 	docsIndexed += 1
+
+processedURLs = []
 
 #get rid of possible urls that try to get out of the directory
 for x in newURLs:
@@ -112,26 +133,74 @@ for x in newURLs:
 		foundBanned.append(x)
 for y in foundBanned:
 	newURLs.remove(y)
-
-print("length of newURLS : {}".format(len(newURLs)))
 for n in newURLs:
-	# (.txt, .htm, .html, .php). 
-	if n[-3:] == "htm" or n[-3:] == "txt" or n[-4:] == "html" or n[-3:] == "php":
-		#https://s2.smu.edu/~fmoore/
-		if n[-8:] == "cow1.txt" or n[-8:] == "cow2.txt" or n[-8:] == "cow3.txt" or n[-8:] == "cow4.txt":
-			putTogether = "https://s2.smu.edu/~fmoore/textfiles/" + n
+	if x not in bannedUrl:
+		if n[-3:] == "pdf":
+			unknownURLS.append(n)
+		elif n[-5:] == "here/":#/dontgohere/
+			robotFile = True
 		else:
-			putTogether = "https://s2.smu.edu/~fmoore/" + n
-		print(putTogether + " LOOKING ")
-		print("added : {}".format(putTogether))
-		foundURLS.append(putTogether)
+			processedURLs.append(n)
 
+while docsIndexed < inputNum:
+		for pro in processedURLs:
+			if pro in bannedUrl:
+				processedURLs.remove(pro)
+		x = starterUrl + "/" + x
+		alreadySearchedURLS.append(x)
+		returnedWords, firstTokens, leTitle = processLink(x)
+		outFile.write("\nURL: {} TITLE: {}".format(x, leTitle))
+		for tok in firstTokens:
+			allWords.append(tok)
+		docsIndexed += 1
+		doctemp = "doc" + str(docsIndexed)
+		togetherString = putTokensInOne(firstTokens)
+		#df1.insert(docsIndexed, {doctemp: [togetherString]})
+	
+		#sLength = len(df1['a'])
+		#df1[doctemp] = pd.Series(np.random.randn(sLength), index=df1.index)
+		#({doctemp: [togetherString]})
+		#df1 = df1.assign(doctemp=doctemp.values)
+		#doctemp = [togetherString]
+		df1[doctemp] = [togetherString]
+		#df1[doctemp] = doctemp
+		newURLs2 = links(starterUrl)
+		for x in newURLs2:
+			if x in bannedUrl:
+				foundBanned.append(x)
+		for n in newURLs2:
+			if n[-3:] == "pdf":
+				unknownURLS.append(n)
+			elif n[-5:] == "here/":#/dontgohere/
+				robotFile = True
+			else:
+				processedURLs.append(n)
+
+#use the processed URLs now
+#for l in 
+'''
+for n in newURLs:
+	status = broken(n)#check to see if its a broken link
+	if status == True:
+		blink.append(n)
 	else:
-		unknownURLS.append(n)
+	# (.txt, .htm, .html, .php). 
+		if n[-3:] == "htm" or n[-3:] == "txt" or n[-4:] == "html" or n[-3:] == "php":
+		#https://s2.smu.edu/~fmoore/
+			if n[-8:] == "cow1.txt" or n[-8:] == "cow2.txt" or n[-8:] == "cow3.txt" or n[-8:] == "cow4.txt":
+				putTogether = "https://s2.smu.edu/~fmoore/textfiles/" + n
+			else:
+				putTogether = "https://s2.smu.edu/~fmoore/" + n
+			print(putTogether + " LOOKING ")
+			print("added : {}".format(putTogether))
+			foundURLS.append(putTogether)
+
+		else:
+			unknownURLS.append(n)
 if inputNum	> len(foundURLS):
 	print("I didn't find enough urls for that:(")
 	rangeOfURLS = foundURLS
-if inputNum < len(foundURLS):
+if inputNum =< len(foundURLS):
 	rangeOfURLS = foundURLS[:inputNum]
 
 for i in rangeOfURLS: #already searched initial one
@@ -156,14 +225,19 @@ for i in rangeOfURLS: #already searched initial one
 				dupes.append(a)
 
 	alreadySearchedURLS.append(i)
-
+'''
 #print('Dictionary in descending order by value : ',sortedPairs)
+
+vectorizer = TfidfVectorizer()
+doc_vec = vectorizer.fit_transform(df1.iloc[0])
+df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
+df2.columns = df1.columns
+print(df2) 
+
 
 '''*********TFIDF**********'''
 
-#tf is (count of word in the document) / (count of all words in the document)
-#leTF = computeTF(returnedWords, **lenDict) #pass the dictionary and the bag of words(our tokens)
-#print(leTF)
+
 
 
 
@@ -178,14 +252,15 @@ for i in dupes:
 	outFile.write(str(i) + "\n")
 #outFile.write(dupes)
 outFile.write('\nBroken Links found: \n')
-
+for b in blink:
+	outFile.write(str(b) + "\n")
 outFile.write('\nNon-texfiles Found: \n')
 for u in unknownURLS:
 	outFile.write(str(u) + "\n")
 #outFile.write(unknownURLS)
 outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
 outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
-outFile.write('\n\nNumber of words indexed: {}'.format(len(returnedWords)))
+outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
 outFile.write("Shown in excel file")
 outFile.write('\n\nThe top 20 most commonly used words: \n')
