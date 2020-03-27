@@ -221,11 +221,11 @@ for i in dupes:
 outFile.write('\nBroken Links found: \n')
 for b in blink:
 	outFile.write(str(b) + "\n")
-outFile.write('\nNon-texfiles Found: \n')
+outFile.write('\nNon-textfiles Found: \n')
 for u in unknownURLS:
 	outFile.write(str(u) + "\n")
 
-outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
+outFile.write("\nDefinition of a 'word': \nIn the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.")
 outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
