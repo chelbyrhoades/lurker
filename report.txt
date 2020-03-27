@@ -2,14 +2,14 @@ LURKER REPORT
 GENERATED ON: 2020-03-26
 URL: https://s2.smu.edu/~fmoore TITLE: error for now
 URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/misc/count_letters.txt TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020 TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/http://www.gedpage.com/soundex.html TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/does_not_exist.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/textfiles/cow3.txt TITLE: error for now
 URL: https://s2.smu.edu/~fmoore/index_duplicate.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/misc/count_letters_duplicate.txt TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/http://www.gedpage.com/soundex.html TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/textfiles/cow4.txt TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/does_not_exist.htm TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020 TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/textfiles/cow1.txt TITLE: error for now
 URL: https://s2.smu.edu/~fmoore/textfiles/index.html TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/textfiles/cow2.txt TITLE: error for now
 Duplicate documents found: 
 
 Broken Links found: 
@@ -18,12 +18,12 @@ Non-textfiles Found:
 CS5337_syllabus.pdf
 CS7337_syllabus.pdf
 misc/IEEE-reimagining-search-june-2016.pdf
-misc/eg-little-lamb.xlsx
-misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
-misc/eg-brown-cow.xlsx
 misc/mercator-article.pdf
+misc/eg-little-lamb.xlsx
 misc/word-morphing-puzzle.pdf
+misc/eg-brown-cow.xlsx
 misc/eg-figure6-12.xlsx
+misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
 misc/letter_distribution.pptx
 
 Definition of a 'word': 
@@ -31,31 +31,31 @@ In the realm of Web Crawling, a word is only as powerful as it's frequency. Mean
 
 Number of documents indexed: 10
 
-Number of words indexed: 563
+Number of words indexed: 391
 
 Term-document frequency matrix:
 The tfidf is printed to the terminal as well as matrix.csv
 
 The top 20 most commonly used words and the amount of times that they are used: 
  68
-) 25
 (chpt 14
 Hmwk 12
-= 10
-; 10
 Mar 9
 Apr 9
 Feb 8
-{ 8
-( 8
-} 8
 Not 8
 Found 8
 Spring 7
 The 7
 assigned, 6
-#include 6
-int 6
 golf 5
+basketball 5
+baseball 5
+football 5
+Freeman 4
+SMU 4
+Jan 4
+due 4
+due, 4
 
  The disallowed file was: dontgohere/badfile1.html
