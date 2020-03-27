@@ -1,16 +1,18 @@
 LURKER REPORT
 GENERATED ON: 2020-03-26
-URL: https://s2.smu.edu/~fmoore TITLE: currently error
-URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: currently error
+URL: https://s2.smu.edu/~fmoore TITLE: currently an error
+URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: currently an error
 Duplicate documents found: 
 
 Broken Links found: 
 
 Non-texfiles Found: 
-CS5337_syllabus.pdf
 CS7337_syllabus.pdf
 CS5337_syllabus.pdf
-CS7337_syllabus.pdf
+schedule.htm
+schedule.htm
+schedule.htm
+schedule.htm
 
 Definition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.
 
@@ -19,6 +21,6 @@ Number of documents indexed: 2
 Number of words indexed: 310
 
 Term-document frequency matrix:
-Shown in excel file
+The tfidf is printed to the terminal until further notice
 
 The top 20 most commonly used words: 

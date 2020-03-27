@@ -61,7 +61,7 @@ def processLink(leUrl):
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
 	#title = soup.title.string
-	title = "currently error"
+	title = "currently an error"
 	txt = soup.get_text()
 	tokens = txt.split()
 
@@ -106,7 +106,7 @@ tf_idf = {}
 #our first url - the given website
 starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
-"mailto:fmoore@lyle.smu.edu", "https://s2.smu.edu/~fmoore/dontgohere", "https://s2.smu.edu/~fmoore/dontgohere/badfile2.html", "https://s2.smu.edu/~fmoore/misc/noindex.html", "https://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020"] #I've gotten these files and they aren't supposed to be found.
+"mailto:fmoore@lyle.smu.edu", "https://s2.smu.edu/~fmoore/dontgohere", "https://s2.smu.edu/~fmoore/dontgohere/badfile2.html", "https://s2.smu.edu/~fmoore/misc/noindex.html", "https://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020", "http://lyle.smu.edu"] #I've gotten these files and they aren't supposed to be found.
 #the robots.txt file disallowed /dontgohere specifically
 
 #getting the title
@@ -129,51 +129,63 @@ if robotWord not in returnedWords:
 processedURLs = []
 
 #get rid of possible urls that try to get out of the directory
-for x in newURLs:
-	if x in bannedUrl:
-		foundBanned.append(x)
+for a in newURLs:
+	if a in bannedUrl:
+		foundBanned.append(a)
 for y in foundBanned:
 	newURLs.remove(y)
 for n in newURLs:
-	if x not in bannedUrl:
+	if n not in bannedUrl:
 		if n[-3:] == "pdf":
 			unknownURLS.append(n)
+			#if n in processedURLs:
+				#processedURLs.remove(n)
 		elif n[-5:] == "here/":#/dontgohere/
 			robotFile = True
 		else:
 			processedURLs.append(n)
+#this doesn't make sense but it works
+for i in processedURLs:
+	x = i
+
 count = 1
 while docsIndexed < inputNum:
-		for pro in processedURLs:
-			if pro in bannedUrl:
-				processedURLs.remove(pro)
-		x = starterUrl + "/" + x
-		alreadySearchedURLS.append(x)
-		returnedWords, firstTokens, leTitle = processLink(x)
-		outFile.write("\nURL: {} TITLE: {}".format(x, leTitle))
-		for tok in firstTokens:
-			allWords.append(tok)
-		docsIndexed += 1
-		togetherString = ""
-		togetherString = putTokensInOne(firstTokens)
+		print(x + " is our current person")
+		if x in bannedUrl:
+			break
+		else:
+			x = starterUrl + "/" + x
+			alreadySearchedURLS.append(x)
+			returnedWords, firstTokens, leTitle = processLink(x)
+			outFile.write("\nURL: {} TITLE: {}".format(x, leTitle))
+			for tok in firstTokens:
+				allWords.append(tok)
+			docsIndexed += 1
+			togetherString = ""
+			togetherString = putTokensInOne(firstTokens)
 		#df1.insert(docsIndexed, {doctemp: [togetherString]})
 		#df1 = pd.DataFrame.insert(0, })#{doctemp: [togetherString]})
 		#df1.insert(0, 'Name', 'abc')
-		name = 'doc' + str(count)
-		df1.insert(0, name, togetherString)
-		count += 1
+			name = 'doc' + str(count)
+			df1.insert(0, name, togetherString)
+			count += 1
 		#df1[doctemp] = doctemp
-		newURLs2 = links(starterUrl)
-		for x in newURLs2:
-			if x in bannedUrl:
-				foundBanned.append(x)
-		for n in newURLs2:
-			if n[-3:] == "pdf":
-				unknownURLS.append(n)
-			elif n[-5:] == "here/":#/dontgohere/
-				robotFile = True
-			else:
-				processedURLs.append(n)
+			newURLs2 = links(x)
+			print(newURLs2)
+			for x in newURLs2:
+				if x in bannedUrl:
+					foundBanned.append(x)
+					#processedURLs.remove(x)
+				elif x[-3:] == "pdf":
+					unknownURLS.append(n)
+				elif x[-5:] == "here/":#/dontgohere/
+					robotFile = True
+				else:
+					processedURLs.append(x)
+			if len(processedURLs) > 1:
+				x = processedURLs[count]
+
+
 
 #use the processed URLs now
 #for l in 
@@ -231,7 +243,7 @@ vectorizer = TfidfVectorizer()
 doc_vec = vectorizer.fit_transform(df1.iloc[0])
 df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
 df2.columns = df1.columns
-print(df2) 
+print(df2)
 
 
 '''*********TFIDF**********'''
@@ -261,7 +273,7 @@ outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is
 outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
-outFile.write("Shown in excel file")
+outFile.write('The tfidf is printed to the terminal until further notice')
 outFile.write('\n\nThe top 20 most commonly used words: \n')
 #outFile.write(top20Items)
 outFile.close()
