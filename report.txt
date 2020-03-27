@@ -2,6 +2,7 @@ LURKER REPORT
 GENERATED ON: 2020-03-26
 URL: https://s2.smu.edu/~fmoore TITLE: currently an error
 URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: currently an error
+URL: https://s2.smu.edu/~fmoore/textfiles/cow2.txt TITLE: currently an error
 Duplicate documents found: 
 
 Broken Links found: 
@@ -9,16 +10,20 @@ Broken Links found:
 Non-texfiles Found: 
 CS7337_syllabus.pdf
 CS5337_syllabus.pdf
-CS5337_syllabus.pdf
-CS5337_syllabus.pdf
-CS5337_syllabus.pdf
-CS5337_syllabus.pdf
+misc/eg-figure6-12.xlsx
+misc/letter_distribution.pptx
+misc/eg-brown-cow.xlsx
+misc/word-morphing-puzzle.pdf
+misc/mercator-article.pdf
+misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
+misc/eg-little-lamb.xlsx
+misc/IEEE-reimagining-search-june-2016.pdf
 
 Definition of a 'word': In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.
 
-Number of documents indexed: 2
+Number of documents indexed: 3
 
-Number of words indexed: 310
+Number of words indexed: 313
 
 Term-document frequency matrix:
 The tfidf is printed to the terminal until further notice

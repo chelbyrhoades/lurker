@@ -18,7 +18,7 @@ import time
 import operator
 import sys #getting input
 
-inputNum = int(input("Enter a number: "))
+inputNum = int(input("Enter the number of files that you want to crawl: "))
 
 session = requests.Session()
 retry = Retry(connect=3, backoff_factor=0.5)
@@ -151,10 +151,11 @@ for i in processedURLs:
 
 count = 1
 while docsIndexed < inputNum:
-		print(x + " is our current person")
 		if x in bannedUrl:
+			print("found a file we don't wanna mess with (could be for various reasons)")
 			break
 		else:
+			print(x + " is our current person")
 			x = starterUrl + "/" + x
 			alreadySearchedURLS.append(x)
 			returnedWords, firstTokens, leTitle = processLink(x)
@@ -172,15 +173,15 @@ while docsIndexed < inputNum:
 			count += 1
 		#df1[doctemp] = doctemp
 			newURLs2 = links(x)
-			print(newURLs2)
 			for x in newURLs2:
-				if x in bannedUrl:
+				print('reviewing {}'.format(x))
+				if x in bannedUrl or x[10:] == 'dontgohere': #we don't want that file
 					foundBanned.append(x)
-					#processedURLs.remove(x)
-				elif x[-3:] == "pdf":
-					unknownURLS.append(n)
+				elif x[-3:] == "pdf" or x[-4:] == "xlsx" or x[-4:] == "pptx":
+					unknownURLS.append(x)
 				elif x[-5:] == "here/":#/dontgohere/
 					robotFile = True
+
 				else:
 					processedURLs.append(x)
 			if len(processedURLs) > 1:
