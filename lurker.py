@@ -1,5 +1,6 @@
 '''************************
 Chelby Rhoades
+TO RUN: Mac: python3 lurker.py
 ************************'''
 '''********IMPORTS***********'''
 #libraries used for searching the web/parsing urls
@@ -24,6 +25,10 @@ import sys #getting input
 
 gotInput = False
 
+print("Lurker: A Web Crawler\n")
+print('To properly see the readme, please consider reading it through the github website\n')
+print('The results will be in reports.txt and matrix.csv\n')
+print("************ Now let's begin! ************")
 #making sure a number is put in
 while gotInput != True:
     inputNum = int(input("\nEnter the number of files that you want to crawl: "))
@@ -67,7 +72,7 @@ def processLink(leUrl):
 	words = []
 	wordfreq = []
  #I put common stop words in this
-	ommited = ['-','i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 
+	ommited = ['/', ',','-','i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 'hers', 'herself', 'it', 'its', 
 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have',
  'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
  'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
@@ -80,13 +85,14 @@ def processLink(leUrl):
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
-	#title = soup.title.string
-	title = "currently an error"
+	title = "error for now"
 	txt = soup.get_text()
 	tokens = txt.split()
     
     
 	for w in tokens:
+		result = ''.join([i for i in w if not i.isdigit()])
+		w = result
 		#doing this twice for those words that start like 12Apr
 		if w not in ommited:
 			words.append(w)
@@ -94,13 +100,6 @@ def processLink(leUrl):
 
 	pairs = (dict(zip(words, wordfreq))) # putting the two lists together
 	return pairs, words, title
-
-
-def broken(url) :
-	if requests.get(url).status_code == 200:
-		return False
-	else:
-		return True
 
 
 def putTokensInOne(listTok):
@@ -136,15 +135,15 @@ bannedUrl = ["http://lyle.smu.edu",
 alreadySearchedURLS.append(starterUrl)
 returnedWords, firstTokens, leTitle = processLink(starterUrl)
 doctemp = "doc" + str(docsIndexed)
+for tok in firstTokens:
+		allWords.append(tok)
 togetherString = putTokensInOne(firstTokens)
-df1 = pd.DataFrame({doctemp: [togetherString]})
+df1 = pd.DataFrame({'ROOT': [togetherString]})
 
 
 
 if robotWord not in returnedWords:
 	outFile.write("\nURL: {} TITLE: {}".format(starterUrl, leTitle))
-	for tok in firstTokens:
-		allWords.append(tok)
 	newURLs = links(starterUrl)
 	docsIndexed += 1
 
@@ -160,17 +159,14 @@ for n in newURLs:
 	if n not in bannedUrl:
 		if n[-3:] == "pdf":
 			unknownURLS.append(n)
-			#if n in processedURLs:
-				#processedURLs.remove(n)
-		elif n[-5:] == "here/":#/dontgohere/
+		elif n[:10] == "dontgohere":#/dontgohere/
 			robotFile = True
 		else:
 			processedURLs.append(n)
-#this doesn't make sense but it works
-for i in processedURLs:
+
+for i in processedURLs:	#this doesn't make sense but it works. I'll look into it further
 	x = i
 
-negativeCount = docsIndexed
 count = 1
 while docsIndexed < inputNum:
 		if x in bannedUrl:
@@ -178,6 +174,7 @@ while docsIndexed < inputNum:
 			break
 		else:
 			print(x + " is our currently considered address")
+			tempx = x
 			x = starterUrl + "/" + x
 			alreadySearchedURLS.append(x)
 			returnedWords, firstTokens, leTitle = processLink(x)
@@ -187,18 +184,15 @@ while docsIndexed < inputNum:
 			docsIndexed += 1
 			togetherString = ""
 			togetherString = putTokensInOne(firstTokens)
-
-			name = 'doc' + str(count)
-			df1.insert(0, name, togetherString)
+			df1.insert(0, tempx, togetherString)
 			count += 1
 			newURLs2 = links(x)
 			for x in newURLs2:
 				print('reviewing {}'.format(x))
-				'''teller = broken(x)
-				if teller == True:
-					blink.append(teller)''' #doesn't quite work yet
+
 				if x in bannedUrl or x == 'dontgohere/badfile1.html': #we don't want that file
 					foundBanned.append(x)
+					disallowed = x
 				elif x[-3:] == "pdf" or x[-4:] == "xlsx" or x[-4:] == "pptx":
 					unknownURLS.append(x)
 				elif x[-5:] == "here/":#/dontgohere/
@@ -235,7 +229,7 @@ outFile.write("\nDefinition of a 'word': In the realm of Web Crawling, a word is
 outFile.write('\n\nNumber of documents indexed: {}'.format(docsIndexed))
 outFile.write('\n\nNumber of words indexed: {}'.format(len(allWords)))
 outFile.write('\n\nTerm-document frequency matrix:\n')
-outFile.write('The tfidf is printed to the terminal until further notice')
+outFile.write('The tfidf is printed to the terminal as well as matrix.csv')
 outFile.write('\n\nThe top 20 most commonly used words and the amount of times that they are used: \n')
 #here's where collections comes into play
 Counter = Counter(allWords)
@@ -243,7 +237,7 @@ most_occur = Counter.most_common(20)
 for t in most_occur:
   outFile.write(' '.join(str(s) for s in t) + '\n')
 
-df2.to_csv(r'/Users/ChelbyRhoades/Desktop/lurker/matrix.csv', index = False)
-
+df2.to_csv(r'/Users/ChelbyRhoades/Desktop/lurker/matrix.csv', index = True)
+outFile.write('\n The disallowed file was: {}'.format(disallowed))
 outFile.close()
 
