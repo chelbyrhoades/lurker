@@ -33,7 +33,8 @@ My best guess is to run py lurker.py; from what I can tell from the documentatio
 
 ## Getting the Results
 All results, other than tfidf matrix, are displayed in the 'report.txt' document.
-The tfidf matrix is in the terminal for now. I was trying to put it in a separate file, but got errors. 
+The tfidf matrix is in the terminal for now (in case of error) but it is also in 'matrix.csv'. The matrix is sorted into docIDs. 
+
 This matrix is formed thanks to the sklearn library. I'm not sure how in depth I need to be with the tfidf matrix, so I created a separate file in order to show that I know how it works and what the score means. 
 
 ## Usage
