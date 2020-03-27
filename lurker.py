@@ -16,6 +16,7 @@ from datetime import date
 import time
 import operator
 import sys #getting input
+from urlparse import urlparse
 
 inputNum = int(input("Enter the number of files that you want to crawl: "))
 
@@ -41,6 +42,15 @@ def links(url):
     for link in links:
         finalLinks.add(link.attrs['href'])
     return finalLinks
+
+
+def checkUrl(url):
+    p = urlparse(url)
+    conn = httplib.HTTPConnection(p.netloc)
+    conn.request('HEAD', p.path)
+    resp = conn.getresponse()
+    return resp.status < 400
+
 
 def processLink(leUrl):
 	words = []
@@ -174,7 +184,10 @@ while docsIndexed < inputNum:
 			newURLs2 = links(x)
 			for x in newURLs2:
 				print('reviewing {}'.format(x))
-				if x in bannedUrl or x == 'dontgohere/badfile1.html': #we don't want that file
+				teller = broken(x)
+				if teller == True:
+					blink.append(teller)
+				elif x in bannedUrl or x == 'dontgohere/badfile1.html': #we don't want that file
 					foundBanned.append(x)
 				elif x[-3:] == "pdf" or x[-4:] == "xlsx" or x[-4:] == "pptx":
 					unknownURLS.append(x)

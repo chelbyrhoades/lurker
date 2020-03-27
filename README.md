@@ -33,7 +33,8 @@ My best guess is to run py lurker.py; from what I can tell from the documentatio
 
 ## Getting the Results
 All results, other than tfidf matrix, are displayed in the 'report.txt' document.
-The tfidf matrix is in 'Matrix.xlxs'
+The tfidf matrix is in the terminal for now. I was trying to put it in a separate file, but got errors. 
+This matrix is formed thanks to the sklearn library. I'm not sure how in depth I need to be with the tfidf matrix, so I created a separate file in order to show that I know how it works and what the score means. 
 
 ## Usage
 For the project:
@@ -45,8 +46,6 @@ The contents of this website will change throughout the Spring 2020 semester.
 The required input to the program is 'N', which limits the number of retrieved pages. N should be set such that you retrieve all pages in the directory, and also act as a safety feature for your program to avoid getting an excessive number of pages.
 
 ## RoadMap
-Ideas to be released int the future - TBD
-
 #### Key Architecture
 A file called 'Design Doc' covers the main data structures used within the project.
 
@@ -61,12 +60,16 @@ A file called 'Design Doc' covers the main data structures used within the proje
 It is known through the project to expect that there are no errors contained in the input files. 
 In the very first version, this will be the mindset. 
 However, the code will be developed to be robust under Web page errors.
+Mine is currently as robust as a toddler; it won't die if you drop it on the ground, but can still get hurt if it's not cared for. 
 
-For Efficiency: the project is aimed to be as efficient as possible. Multithreads were not a requirement in the development of this project. In the Project requirements, it's highlighted that "This is a class project, not a production quality implementation."
+For Efficiency: the project is aimed to be as efficient as possible. Multithreads were not a requirement in the development of this project. In the Project requirements, it's highlighted that "This is a class project, not a production quality implementation." 
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are welcome. I plan on using this as a private repo until 
+1. I'm satisfied with how it looks. 
+2. The class is completed. I don't want other people to steal my hard earned code.
 
+For major changes, please open an issue first to discuss what you would like to change.
 Please make sure to update tests as appropriate.
 
 ## Authors and Acknowledgement
