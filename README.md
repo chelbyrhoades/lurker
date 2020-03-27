@@ -11,7 +11,10 @@ For Mac:
   pip3 install mechanize
   pip3 install urllib
   pip3 install pandas
+  pip3 install openpyxl
+  pip3 install sklearn
 ```
+I'm unsure how many of these libraries are already provided. It's better safe than sorry.
 Hopefully that's all of them! Let me know if it's not!
 For Windows:
 I haven't used Windows, so here is a link on how to install packages: 
