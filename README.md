@@ -3,13 +3,21 @@
 A python-based web crawler designed for SMU CS 5337. It is given a preset list of functionalities.
 
 ## Installation of Required libraries
+For Mac:
 ```bash
+  pip3 install numpy
   pip3 install requests
   pip3 install bs4
   pip3 install mechanize
   pip3 install urllib
   pip3 install pandas
 ```
+Hopefully that's all of them! Let me know if it's not!
+For Windows:
+I haven't used Windows, so here is a link on how to install packages: 
+https://packaging.python.org/tutorials/installing-packages/
+
+The names should be the same for the Mac files.
 
 ## Running the project
 In order to run this project, the system must be updated to Python3. A tutorial to do so can be found at: https://realpython.com/installing-python/
@@ -17,6 +25,12 @@ In order to run this project, the system must be updated to Python3. A tutorial 
 ```bash
   python3 lurker.py
 ```
+#### For Windows:
+First off, Mac is better.
+I'm not entirely sure how the windows terminal works, so here's a link to some documentation: https://docs.python.org/3.3/using/windows.html
+
+My best guess is to run py lurker.py; from what I can tell from the documentation
+
 ## Getting the Results
 All results, other than tfidf matrix, are displayed in the 'report.txt' document.
 The tfidf matrix is in 'Matrix.xlxs'

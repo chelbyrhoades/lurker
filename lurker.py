@@ -8,7 +8,6 @@ from collections import Counter
 import urllib
 from bs4 import BeautifulSoup 
 import pandas as pd
-import openpyxl
 from sklearn.feature_extraction.text import TfidfVectorizer
 import lxml.html
 from requests.adapters import HTTPAdapter
