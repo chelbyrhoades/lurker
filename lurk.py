@@ -5,7 +5,7 @@ from requests.packages.urllib3.util.retry import Retry
 import urllib
 from bs4 import BeautifulSoup
 import lxml.html
-
+import random
 import numpy as np
 from collections import Counter
 import pandas as pd
@@ -21,16 +21,17 @@ import PySimpleGUI as sg
 ''' FUNCTIONS '''
 def visualGUI():
 	sg.theme('Dark Blue 3')	# Add a touch of color
-	lis = ['twelve', 'five']
+	jokeList = ['What do you call a hill full of cats?\n A meow-ntain', 'Two guys walk into a bar. The third one ducks.', 'How many programmers does it take to change a lightbulb? None. Its a hardware problem.']
+
 # All the stuff inside your window.
 	layout = [
-			[sg.Text('This is the FIRST WINDOW'), sg.Text('      ', key='-OUTPUT-')],
+			[sg.Text('Welcome to Lurker! Ready to search?'), sg.Text('      ', key='-OUTPUT-')],
 			[sg.Text()],
-			[sg.Button('Launch 2nd Window'), sg.Button('Popup'), sg.Button('Stop')]
+			[sg.Button('Search'), sg.Button('Joke'), sg.Button('Stop')]
 			]
 # Create the Window
 	
-	window = sg.Window('Window Title', layout, location=(800,600))
+	window = sg.Window('Lurker Mainframe', layout, location=(800,600))
 	win2_active = False
 	i=0
 	while True:             # Event Loop
@@ -39,18 +40,18 @@ def visualGUI():
 			print(i, event, values)
 		if event in (None, 'Stop'):
 			break
-		elif event == 'Popup':
-			sg.popup('This is a BLOCKING popup','all windows remain inactive while popup active')
+		elif event == 'Joke':
+			sg.popup(random.choice(jokeList))
 		i+=1
-		if event == 'Launch 2nd Window' and not win2_active:     # only run if not already showing a window2
+		if event == 'Search' and not win2_active:     # only run if not already showing a window2
 			win2_active = True
 	        # window 2 layout - note - must be "new" every time a window is created
 			layout2 = [
-				[sg.Text('The second window')],
+				[sg.Text('Enter a search query:')],
 				[sg.Input(key='-IN-')],
 				[sg.Button('Show'), sg.Button('Stop')]
 					]
-			window2 = sg.Window('Second Window', layout2)
+			window2 = sg.Window('Lurker Search', layout2)
 	    # Read window 2's events.  Must use timeout of 0
 		cat = ['dog', 'bill']
 		if win2_active:
@@ -67,23 +68,26 @@ def visualGUI():
 				sg.popup('You entered ', values['-IN-'])
 				if values['-IN-'] not in cat:
 					sg.popup('Sorry it isnt in database.')
+			if values['-IN-'].lower() == 'stop':
+				break
 	window.close()
 
 
 '''STARTING TO CRAWL'''
-
-disallowURL = []
+def dissing():
+	disallowURL = []
 #let's first find the disallowed files.
-result = os.popen("curl https://s2.smu.edu/~fmoore/robots.txt").read() #the robots.txt extension is where the disallowed files are.
-result_data_set = {"Disallowed":[], "Allowed":[]}
+	result = os.popen("curl https://s2.smu.edu/~fmoore/robots.txt").read() #the robots.txt extension is where the disallowed files are.
+	result_data_set = {"Disallowed":[], "Allowed":[]}
 
-for line in result.split("\n"):
-    if line.startswith('Allow'):    # this is for allowed url
-        result_data_set["Allowed"].append(line.split(': ')[1].split(' ')[0])    # to neglect the comments or other junk info
-    elif line.startswith('Disallow'):    # this is for disallowed url
-        result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
-        disallowURL.append(line.split(': ')[1].split(' ')[0])
-print (disallowURL)
+	for line in result.split("\n"):
+		if line.startswith('Allow'):    # this is for allowed url
+			result_data_set["Allowed"].append(line.split(': ')[1].split(' ')[0])    # to neglect the comments or other junk info
+		elif line.startswith('Disallow'):    # this is for disallowed url
+			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
+			disallowURL.append(line.split(': ')[1].split(' ')[0])
+	print ('The disallowed url is {}'.format(disallowURL[0]))
+	return disallowURL[0]
 
 
 
@@ -93,11 +97,7 @@ print (disallowURL)
 
 '''MAIN OF THE FUNCTION'''
 if __name__=='__main__':
-	words1 = ['Here comes the sun dun dun dun']
-	words2 = ['Sweet dreams are made of these']
-	words3 = ['There is a house in New Orleans']
-	words4 = ['Dream on! Dream on!']
-	words5 = ['Jenny, I got your number.']
+	notAllowed = dissing()
 	visualGUI()
 
 
