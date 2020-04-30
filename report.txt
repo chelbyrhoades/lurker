@@ -1,15 +1,9 @@
 LURKER REPORT
-GENERATED ON: 2020-03-26
+GENERATED ON: 2020-04-30
 URL: https://s2.smu.edu/~fmoore TITLE: error for now
 URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/index_duplicate.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/http://www.gedpage.com/soundex.html TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/textfiles/cow4.txt TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/does_not_exist.htm TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/http://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020 TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/textfiles/cow1.txt TITLE: error for now
+URL: https://s2.smu.edu/~fmoore/http://www.wessa.net/rwasp_hierarchicalclustering.wasp TITLE: error for now
 URL: https://s2.smu.edu/~fmoore/textfiles/index.html TITLE: error for now
-URL: https://s2.smu.edu/~fmoore/textfiles/cow2.txt TITLE: error for now
 Duplicate documents found: 
 
 Broken Links found: 
@@ -17,37 +11,42 @@ Broken Links found:
 Non-textfiles Found: 
 CS5337_syllabus.pdf
 CS7337_syllabus.pdf
-misc/IEEE-reimagining-search-june-2016.pdf
-misc/mercator-article.pdf
+dontgohere/bayes-hockey-football.xlsx
+dontgohere/poem-classification.pptx
+misc/article_pagerank.pdf
+misc/algorithm-HITS.xlsx
 misc/eg-little-lamb.xlsx
-misc/word-morphing-puzzle.pdf
-misc/eg-brown-cow.xlsx
+misc/letter_distribution.pptx
+misc/article_google.pdf
+misc/mercator-article.pdf
 misc/eg-figure6-12.xlsx
 misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
-misc/letter_distribution.pptx
+dontgohere/poem-classification.xlsx
+misc/word-morphing-puzzle.pdf
+misc/IEEE-reimagining-search-june-2016.pdf
+misc/theasurus-coocurrence.xlsx
+misc/eg-brown-cow.xlsx
 
 Definition of a 'word': 
 In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.
 
-Number of documents indexed: 10
+Number of documents indexed: 4
 
-Number of words indexed: 391
+Number of words indexed: 365
 
 Term-document frequency matrix:
 The tfidf is printed to the terminal as well as matrix.csv
 
 The top 20 most commonly used words and the amount of times that they are used: 
- 68
+ 63
 (chpt 14
 Hmwk 12
 Mar 9
 Apr 9
+assigned, 8
 Feb 8
-Not 8
-Found 8
 Spring 7
-The 7
-assigned, 6
+The 5
 golf 5
 basketball 5
 baseball 5
@@ -57,5 +56,7 @@ SMU 4
 Jan 4
 due 4
 due, 4
+Moore 3
+CS 3
 
  The disallowed file was: dontgohere/badfile1.html
