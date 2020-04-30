@@ -20,30 +20,53 @@ import PySimpleGUI as sg
 
 ''' FUNCTIONS '''
 def visualGUI():
-	sg.theme('DarkAmber')	# Add a touch of color
+	sg.theme('Dark Blue 3')	# Add a touch of color
 	lis = ['twelve', 'five']
 # All the stuff inside your window.
-	layout = [[sg.Text('\n\n\n                                        Lurker: The Queen of Queries')],
-				[sg.Text('\nPlease enter a search query: '), sg.InputText()],
-				[sg.Button('Search'), sg.Button('Stop')] ]
-	layout2 = [[sg.Text('\n\n\nYour query did not match anything in our database.')],
-				[sg.Text('\nPlease try again'), sg.InputText()],
-				[sg.Button('Continue'), sg.Button('Stop')] ]
+	layout = [
+			[sg.Text('This is the FIRST WINDOW'), sg.Text('      ', key='-OUTPUT-')],
+			[sg.Text()],
+			[sg.Button('Launch 2nd Window'), sg.Button('Popup'), sg.Button('Stop')]
+			]
 # Create the Window
-	window = sg.Window('Lurker', layout)
-	window2 = sg.Window('Error!', layout2)
-# Event Loop to process "events" and get the "values" of the inputs
-	while True:
+	
+	window = sg.Window('Window Title', layout, location=(800,600))
+	win2_active = False
+	i=0
+	while True:             # Event Loop
 		event, values = window.read(timeout=100)
-		if event in (None, 'Stop'):	# if user closes window or clicks cancel
+		if event != sg.TIMEOUT_KEY:
+			print(i, event, values)
+		if event in (None, 'Stop'):
 			break
-		if values[0].lower() == 'stop':
-			break
-		if values[0] not in lis and values[0].lower() != 'stop':
-			#window = sg.Window('Error!', layout2)
-			sg.popup('This is a block popup', 'all windows remain the same')
-
-		print('You entered ', values[0])
+		elif event == 'Popup':
+			sg.popup('This is a BLOCKING popup','all windows remain inactive while popup active')
+		i+=1
+		if event == 'Launch 2nd Window' and not win2_active:     # only run if not already showing a window2
+			win2_active = True
+	        # window 2 layout - note - must be "new" every time a window is created
+			layout2 = [
+				[sg.Text('The second window')],
+				[sg.Input(key='-IN-')],
+				[sg.Button('Show'), sg.Button('Stop')]
+					]
+			window2 = sg.Window('Second Window', layout2)
+	    # Read window 2's events.  Must use timeout of 0
+		cat = ['dog', 'bill']
+		if win2_active:
+	        # print("reading 2")
+			event, values = window2.read(timeout=100)
+	        # print("win2 ", event)
+			if event != sg.TIMEOUT_KEY:
+				print("win2 ", event)
+			if event == 'Stop' or event is None:
+	            # print("Closing window 2", event)
+				win2_active = False
+				window2.close()
+			if event == 'Show':
+				sg.popup('You entered ', values['-IN-'])
+				if values['-IN-'] not in cat:
+					sg.popup('Sorry it isnt in database.')
 	window.close()
 
 
