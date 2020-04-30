@@ -19,6 +19,7 @@ For Mac:
   pip3 install pandas
   pip3 install openpyxl
   pip3 install sklearn
+  pip3 install pysimplegui
 ```
 I'm unsure how many of these libraries are already provided. It's better safe than sorry.
 Hopefully that's all of them! Let me know if it's not!
