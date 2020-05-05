@@ -64,6 +64,7 @@ def visualGUI(notInIt, data, inputNum, bagOfWords):
 	i=0
 	while True:             # Event Loop
 		event, values = window.read(timeout=100)
+		count = 0
 		if event != sg.TIMEOUT_KEY:
 			print(i, event, values)
 		if event in(None, 'More info'):
@@ -102,7 +103,9 @@ def visualGUI(notInIt, data, inputNum, bagOfWords):
 				if values['-IN-'] not in bagOfWords:
 					sg.popup('Sorry it isnt in database.')
 				else:
-					listOfCosines = querySearch(values['-IN-'], df1, inputNum)
+					queryW = str(values['-IN-'])
+					listOfCosines = querySearch(values['-IN-'], df1, inputNum, count)
+					count += 1
 			if values['-IN-'].lower() == 'stop':
 				win2_active = False
 				window2.close()
@@ -123,8 +126,6 @@ def dissing():
 			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
 			disallowURL.append(line.split(': ')[1].split(' ')[0])
 	return disallowURL[0]
-
-
 
 
 
@@ -228,10 +229,12 @@ def getTitle(link):
 
 	return html.title.string
 
-def querySearch(queryTerm, data, numDocs):
-	similarities = {'query': 1.0}
+def querySearch(queryTerm, data, numDocs, qWord):
+	count = 0
 	#vectorizer = TfidfVectorizer()
-	data.insert(1, 'query', queryTerm)
+	qWord = 'query' + str(count)
+	data.insert(0, qWord, queryTerm)
+	
 	print(data)
 	dat = pd.DataFrame(data.iloc[0])
 	print(dat)
@@ -243,6 +246,8 @@ def querySearch(queryTerm, data, numDocs):
 	tfidf = TfidfVectorizer().fit_transform(data)
 	cosine_similarities = linear_kernel(tfidf[0:1], tfidf).flatten()
 	print(cosine_similarities)
+	cosine_similarities.max(axis = 0)
+	
 
 	'''df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
 	df2.columns = data.columns
@@ -253,7 +258,7 @@ def querySearch(queryTerm, data, numDocs):
 	print(similarities)'''
 
 	#df2.to_excel("output.xlsx")
-	return similarities
+	return cosine_similarities
 
 
 
@@ -367,6 +372,7 @@ def split_line(text):
 #print(cosine_similarity(df3, df2))
 
 print("\n\n**********\n")
+countOut = 0
 using = int(input("GUI on, yes or no? Enter 1 for yes, 2 for no"))
 if using == 1:
 	visualGUI(notAllowed, df1, inputNum, allWords)
@@ -376,7 +382,9 @@ else:
 
 	for i in listOfWords:
 		i = i.lower().strip()
-		listOfCosines = querySearch(i, df1, inputNum)
+		listOfCosines = querySearch(i, df1, inputNum, countOut)
+		countOut += 1
+
 
 #print(df3)
 

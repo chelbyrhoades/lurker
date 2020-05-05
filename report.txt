@@ -2,34 +2,35 @@ LURKER REPORT
 GENERATED ON: 2020-05-05
 URL: https://s2.smu.edu/~fmoore TITLE: placeholder
 URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: placeholder
-URL: https://s2.smu.edu/~fmoore/misc/count_letters.txt TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/index_duplicate.htm TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/textfiles/extratextfiles/index.php TITLE: placeholder
 Duplicate documents found: 
 
 Broken Links found: 
 
 Non-textfiles Found: 
-CS7337_syllabus.pdf
 CS5337_syllabus.pdf
+CS7337_syllabus.pdf
 misc/word-morphing-puzzle.pdf
-dontgohere/poem-classification.xlsx
-dontgohere/poem-classification.pptx
 misc/eg-little-lamb.xlsx
 misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
-misc/IEEE-reimagining-search-june-2016.pdf
-misc/mercator-article.pdf
-misc/algorithm-HITS.xlsx
-misc/article_pagerank.pdf
-dontgohere/bayes-hockey-football.xlsx
-misc/eg-figure6-12.xlsx
-misc/eg-brown-cow.xlsx
 misc/letter_distribution.pptx
-misc/article_google.pdf
+dontgohere/poem-classification.xlsx
+misc/IEEE-reimagining-search-june-2016.pdf
+misc/algorithm-HITS.xlsx
+dontgohere/bayes-hockey-football.xlsx
+misc/mercator-article.pdf
+misc/article_pagerank.pdf
 misc/theasurus-coocurrence.xlsx
+misc/eg-figure6-12.xlsx
+misc/article_google.pdf
+misc/eg-brown-cow.xlsx
+dontgohere/poem-classification.pptx
 
 Definition of a 'word': 
 In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.
 
-Number of documents indexed: 3
+Number of documents indexed: 4
 
 Number of words indexed: 361
 
@@ -37,25 +38,25 @@ Term-document frequency matrix:
 The tfidf is printed to the terminal as well as matrix.csv
 
 The top 20 most commonly used words and the amount of times that they are used: 
- 41
+ 51
 (chpt 14
 Hmwk 12
 Mar 9
 Apr 9
 assigned, 8
 Feb 8
-Spring 6
+Spring 7
+The 5
+part 5
 Freeman 4
-The 4
+SMU 4
+CS 4
 Jan 4
 due 4
 due, 4
 Moore 3
-SMU 3
-CS 3
 Web 3
-Project 3
-#include 3
-int 3
+text 3
+files 3
 
  The disallowed file was: dontgohere/badfile1.html
