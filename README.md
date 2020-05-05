@@ -24,6 +24,35 @@ For Windows:
 I haven't used Windows, so here is a link on how to install packages: 
 https://packaging.python.org/tutorials/installing-packages/
 
+Libraries use:
+```bash
+from datetime import date
+import time
+import operator
+import sys #getting input
+import os
+import random
+import requests
+#for http searching
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+import urllib
+from bs4 import BeautifulSoup
+import lxml.html
+import PySimpleGUI as sg
+#from urlparse import urlparse
+#scientific computing libraries
+import numpy as np
+from collections import Counter
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity 
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from scipy.spatial.distance import cosine
+import openpyxl
+```
+
 The names should be the same for the Mac files.
 
 ## Running the project
