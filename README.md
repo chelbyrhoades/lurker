@@ -3,10 +3,7 @@
 A python-based web crawler designed for SMU CS 5337. It is given a preset list of functionalities.
 
 ##BIG UPDATE:
-For future updates of lurker, a second file has been made. lurk.py is the current file in which is based off its parent file, lurker. 
-
-This means that lurker.py is the first part of the project and lurk.py is the second. 
-Why? I didn't like some things that I created in the first version, but wanted to base the second version from it. It also keeps a record of the first version that was implemented in the first half of this project.
+Adding cosine similarity! Yesss!
 
 ## Installation of Required libraries
 For Mac:
@@ -33,7 +30,7 @@ The names should be the same for the Mac files.
 In order to run this project, the system must be updated to Python3. A tutorial to do so can be found at: https://realpython.com/installing-python/
 ##### For Mac:
 ```bash
-  python3 lurk.py
+  python3 lurker.py
 ```
 #### For Windows:
 First off, Mac is better.

@@ -4,24 +4,32 @@ TO RUN: Mac: python3 lurker.py
 ************************'''
 '''********IMPORTS***********'''
 #libraries used for searching the web/parsing urls
+#common libraries
+from datetime import date
+import time
+import operator
+import sys #getting input
+import os
+import random
 import requests
+#for http searching
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import urllib
 from bs4 import BeautifulSoup
 import lxml.html
+import PySimpleGUI as sg
 #from urlparse import urlparse
 #scientific computing libraries
 import numpy as np
 from collections import Counter
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity 
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from scipy.spatial.distance import cosine
 import openpyxl
-#other common libraries
-from datetime import date
-import time
-import operator
-import sys #getting input
 
 gotInput = False
 
@@ -34,6 +42,92 @@ while gotInput != True:
     inputNum = int(input("\nEnter the number of files that you want to crawl: "))
     if inputNum > 0:
         gotInput = True
+
+def visualGUI(notInIt, data, inputNum, bagOfWords):
+	sg.theme('Dark Blue 3')	# Add a touch of color
+	jokeList = ['What do you call a hill full of cats?\n A meow-ntain', 'Two guys walk into a bar. The third one ducks.', 'How many programmers does it take to change a lightbulb? None. Its a hardware problem.']
+
+# All the stuff inside your window.
+	layout = [
+			[sg.Text('Welcome to Lurker! Ready to search?'), sg.Text('      ', key='-OUTPUT-')],
+			[sg.Text()],
+			[sg.Button('Search'), sg.Button('Joke'), sg.Button('More info'),sg.Button('Stop')]
+			]
+# Create the Window
+	info = "Disallowed path found using the robots.txt file: " + notInIt
+	info2 = 'I stored the tfidf in a dataframe, then transformed it using cosine similarity.'
+	info3 = "I changed quite a bit with these files - previously, my Lurker had been reading files that it shouldn't have, as well as it didn't have a cool GUI."
+	info4 = "This Lurker stores html, php, and text files and uses the data for the search"
+	info5 = "I used sklearn's tfidfVectorizer and CosineSimilarity libraries in order to be able to search multiple terms"
+	window = sg.Window('Lurker Mainframe', layout, location=(800,600))
+	win2_active = False
+	i=0
+	while True:             # Event Loop
+		event, values = window.read(timeout=100)
+		if event != sg.TIMEOUT_KEY:
+			print(i, event, values)
+		if event in(None, 'More info'):
+			sg.popup(info, info2, info3, info4, info5)
+		if event in (None, 'Stop'):
+			break
+		elif event == 'Joke':
+			sg.popup(random.choice(jokeList))
+		i+=1
+		if event == 'Search' and not win2_active:     # only run if not already showing a window2
+			win2_active = True
+	        # window 2 layout - note - must be "new" every time a window is created
+			layout2 = [
+				[sg.Text('Enter a search query:')],
+				[sg.Input(key='-IN-')],
+				[sg.Button('Show'), sg.Button('Stop')]
+					]
+			window2 = sg.Window('Lurker Search', layout2)
+	    # Read window 2's events.  Must use timeout of 0
+		
+		if win2_active:
+	        # print("reading 2")
+			event, values = window2.read(timeout=100)
+	        # print("win2 ", event)
+			if event != sg.TIMEOUT_KEY:
+				print("win2 ", event)
+			if event == 'Stop' or event is None:
+	            # print("Closing window 2", event)
+				win2_active = False
+				window2.close()
+			if event == 'Show':
+				sg.popup('You entered ', values['-IN-'])
+				#send values['-IN-'] to the database to see if its in it
+				#use the passed in to query
+				#score, docurl, doctitle
+				if values['-IN-'] not in bagOfWords:
+					sg.popup('Sorry it isnt in database.')
+				else:
+					listOfCosines = querySearch(values['-IN-'], df1, inputNum)
+			if values['-IN-'].lower() == 'stop':
+				win2_active = False
+				window2.close()
+	window.close()
+
+
+'''STARTING TO CRAWL'''
+def dissing():
+	disallowURL = []
+#let's first find the disallowed files.
+	result = os.popen("curl https://s2.smu.edu/~fmoore/robots.txt").read() #the robots.txt extension is where the disallowed files are.
+	result_data_set = {"Disallowed":[], "Allowed":[]}
+
+	for line in result.split("\n"):
+		if line.startswith('Allow'):    # this is for allowed url
+			result_data_set["Allowed"].append(line.split(': ')[1].split(' ')[0])    # to neglect the comments or other junk info
+		elif line.startswith('Disallow'):    # this is for disallowed url
+			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
+			disallowURL.append(line.split(': ')[1].split(' ')[0])
+	return disallowURL[0]
+
+
+
+
+
 
 #starting a session and making sure we aren't being impolite
 session = requests.Session()
@@ -85,7 +179,12 @@ def processLink(leUrl):
 	#url = requests.get(leUrl)#"http://s2.smu.edu/~fmoore") #should find schedule.htm
 	pagetext = url.text
 	soup = BeautifulSoup(pagetext, "html.parser")
-	title = "error for now"
+	
+	#page = urllib.request.urlopen(leUrl)
+	#html = BeautifulSoup(page.read(), 'html.parser')
+	#title = html.title.string
+	title = 'placeholder'
+
 	txt = soup.get_text()
 	tokens = txt.split()
     
@@ -108,8 +207,59 @@ def putTokensInOne(listTok):
 		leString = leString + e + " "
 	return leString
 
+def dissing():
+	disallowURL = []
+#let's first find the disallowed files.
+	result = os.popen("curl https://s2.smu.edu/~fmoore/robots.txt").read() #the robots.txt extension is where the disallowed files are.
+	result_data_set = {"Disallowed":[], "Allowed":[]}
+
+	for line in result.split("\n"):
+		if line.startswith('Allow'):    # this is for allowed url
+			result_data_set["Allowed"].append(line.split(': ')[1].split(' ')[0])    # to neglect the comments or other junk info
+		elif line.startswith('Disallow'):    # this is for disallowed url
+			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
+			disallowURL.append(line.split(': ')[1].split(' ')[0])
+	return disallowURL[0]
+
+def getTitle(link):
+	page = urllib.request.urlopen('http://en.wikipedia.org')
+	html = BeautifulSoup(page.read(), 'html.parser')
+	print(html.title.string)
+
+	return html.title.string
+
+def querySearch(queryTerm, data, numDocs):
+	similarities = {'query': 1.0}
+	#vectorizer = TfidfVectorizer()
+	data.insert(1, 'query', queryTerm)
+	print(data)
+	dat = pd.DataFrame(data.iloc[0])
+	print(dat)
+	dat.to_excel('queryOut.xlsx')
+	#df2.to_excel("output.xlsx")
+	#doc_vec = vectorizer.fit_transform(data.iloc[0])
+#cosine = cosine_similarity(tfidf_matrix_train[0:1], doc_vec)
+#rint(cosine)
+	tfidf = TfidfVectorizer().fit_transform(data)
+	cosine_similarities = linear_kernel(tfidf[0:1], tfidf).flatten()
+	print(cosine_similarities)
+
+	'''df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
+	df2.columns = data.columns
+	for i in range(0, numDocs):
+		sim = (1 - cosine(queryTerm, data.iloc[i]))
+		similarities.update({data[i] : sim})
+
+	print(similarities)'''
+
+	#df2.to_excel("output.xlsx")
+	return similarities
+
+
+
 '''******MAIN DRIVER*******'''
 #variables
+notAllowed = dissing()
 foundURLS = []
 foundBanned = []
 alreadySearchedURLS = []
@@ -129,7 +279,7 @@ starterUrl = "https://s2.smu.edu/~fmoore"
 bannedUrl = ["http://lyle.smu.edu",
 "mailto:fmoore@lyle.smu.edu", "https://s2.smu.edu/~fmoore/dontgohere", "https://s2.smu.edu/~fmoore/dontgohere/badfile2.html", "https://s2.smu.edu/~fmoore/misc/noindex.html", "https://www.smu.edu/EnrollmentServices/Registrar/Enrollment/FinalExamSchedule/Spring2020", "http://lyle.smu.edu"] #I've gotten these files and they aren't supposed to be found.
 #the robots.txt file disallowed /dontgohere specifically
-
+notAllowed = dissing()
 #getting the title
 
 alreadySearchedURLS.append(starterUrl)
@@ -157,7 +307,7 @@ for y in foundBanned:
 	newURLs.remove(y)
 for n in newURLs:
 	if n not in bannedUrl:
-		if n[-3:] == "pdf":
+		if n[-3:] == "pdf" or n[-3:] == "jpg":
 			unknownURLS.append(n)
 		elif n[:10] == "dontgohere":#/dontgohere/
 			robotFile = True
@@ -173,7 +323,7 @@ while docsIndexed < inputNum:
 			print("found a file we don't wanna mess with (could be for various reasons)")
 			break
 		else:
-			print(x + " is our currently considered address")
+			print('loading...')
 			tempx = x
 			x = starterUrl + "/" + x
 			alreadySearchedURLS.append(x)
@@ -188,7 +338,7 @@ while docsIndexed < inputNum:
 			count += 1
 			newURLs2 = links(x)
 			for x in newURLs2:
-				print('reviewing {}'.format(x))
+				print('.\n')
 
 				if x in bannedUrl or x == 'dontgohere/badfile1.html': #we don't want that file
 					foundBanned.append(x)
@@ -202,13 +352,37 @@ while docsIndexed < inputNum:
 			if len(processedURLs) > 1:
 				x = processedURLs[count]
 
+def split_line(text):
+	result = []
+    # split the text
+	words = text.split()
+	for word in words:
+		result.append(word)
+	return result
 
 '''*********TFIDF**********'''
-vectorizer = TfidfVectorizer()
-doc_vec = vectorizer.fit_transform(df1.iloc[0])
-df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
-df2.columns = df1.columns
-print(df2)
+
+#productsDict = df2.values.to_list()
+#df3 = pd.DataFrame(({'query': 'cat's, 'va': b}, index=[0]))
+#print(cosine_similarity(df3, df2))
+
+print("\n\n**********\n")
+using = int(input("GUI on, yes or no? Enter 1 for yes, 2 for no"))
+if using == 1:
+	visualGUI(notAllowed, df1, inputNum, allWords)
+else:
+	trying = input('What would you like to search?')
+	listOfWords = split_line(trying)
+
+	for i in listOfWords:
+		i = i.lower().strip()
+		listOfCosines = querySearch(i, df1, inputNum)
+
+#print(df3)
+
+
+print("\n\n**********\n")
+
 
 
 '''******FINALIZING REPORT*******'''
@@ -237,7 +411,7 @@ most_occur = Counter.most_common(20)
 for t in most_occur:
   outFile.write(' '.join(str(s) for s in t) + '\n')
 
-df2.to_csv(r'/Users/ChelbyRhoades/Desktop/lurker/matrix.csv', index = True)
+#df2.to_csv(r'/Users/ChelbyRhoades/Desktop/lurker/matrix.csv', index = True)
 outFile.write('\n The disallowed file was: {}'.format(disallowed))
 outFile.close()
 
