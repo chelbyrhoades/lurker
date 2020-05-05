@@ -59,6 +59,7 @@ def visualGUI(notInIt, data, inputNum, bagOfWords):
 	info3 = "I changed quite a bit with these files - previously, my Lurker had been reading files that it shouldn't have, as well as it didn't have a cool GUI."
 	info4 = "This Lurker stores html, php, and text files and uses the data for the search"
 	info5 = "I used sklearn's tfidfVectorizer and CosineSimilarity libraries in order to be able to search multiple terms"
+	info6 = "The search is buggy right now. It should print out to queryOut.xlxs"
 	window = sg.Window('Lurker Mainframe', layout, location=(800,600))
 	win2_active = False
 	i=0
@@ -68,7 +69,7 @@ def visualGUI(notInIt, data, inputNum, bagOfWords):
 		if event != sg.TIMEOUT_KEY:
 			print(i, event, values)
 		if event in(None, 'More info'):
-			sg.popup(info, info2, info3, info4, info5)
+			sg.popup(info, info2, info3, info4, info5, info6)
 		if event in (None, 'Stop'):
 			break
 		elif event == 'Joke':
@@ -100,8 +101,15 @@ def visualGUI(notInIt, data, inputNum, bagOfWords):
 				#send values['-IN-'] to the database to see if its in it
 				#use the passed in to query
 				#score, docurl, doctitle
+
+				#ind = pd.Index(data)
+				#if ind.str.contains(values['-IN-'], regex=False) == False:
+				#	
 				if values['-IN-'] not in bagOfWords:
 					sg.popup('Sorry it isnt in database.')
+				#if(len(data[].str.contains('Mel'))>0):
+    			#	print("Name Present")
+					
 				else:
 					queryW = str(values['-IN-'])
 					listOfCosines = querySearch(values['-IN-'], df1, inputNum, count)
@@ -208,19 +216,6 @@ def putTokensInOne(listTok):
 		leString = leString + e + " "
 	return leString
 
-def dissing():
-	disallowURL = []
-#let's first find the disallowed files.
-	result = os.popen("curl https://s2.smu.edu/~fmoore/robots.txt").read() #the robots.txt extension is where the disallowed files are.
-	result_data_set = {"Disallowed":[], "Allowed":[]}
-
-	for line in result.split("\n"):
-		if line.startswith('Allow'):    # this is for allowed url
-			result_data_set["Allowed"].append(line.split(': ')[1].split(' ')[0])    # to neglect the comments or other junk info
-		elif line.startswith('Disallow'):    # this is for disallowed url
-			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
-			disallowURL.append(line.split(': ')[1].split(' ')[0])
-	return disallowURL[0]
 
 def getTitle(link):
 	page = urllib.request.urlopen('http://en.wikipedia.org')
@@ -233,22 +228,17 @@ def querySearch(queryTerm, data, numDocs, qWord):
 	count = 0
 	#vectorizer = TfidfVectorizer()
 	qWord = 'query' + str(count)
-	data.insert(0, qWord, queryTerm)
+	data.insert(0, 'query', queryTerm)
 	
-	print(data)
-	dat = pd.DataFrame(data.iloc[0])
+	
+	dat = pd.DataFrame(data.iloc[0]) #puts the data into a frame
 	print(dat)
-	dat.to_excel('queryOut.xlsx')
-	#df2.to_excel("output.xlsx")
-	#doc_vec = vectorizer.fit_transform(data.iloc[0])
-#cosine = cosine_similarity(tfidf_matrix_train[0:1], doc_vec)
-#rint(cosine)
+	dat.to_excel('queryOut.xlsx') #
 	tfidf = TfidfVectorizer().fit_transform(data)
-	cosine_similarities = linear_kernel(tfidf[0:1], tfidf).flatten()
+	cosine_similarities = linear_kernel(tfidf[0:numDocs-1], tfidf).flatten()
 	print(cosine_similarities)
 	cosine_similarities.max(axis = 0)
 	
-
 	'''df2 = pd.DataFrame(doc_vec.toarray().transpose(), index=vectorizer.get_feature_names())
 	df2.columns = data.columns
 	for i in range(0, numDocs):
@@ -293,7 +283,7 @@ doctemp = "doc" + str(docsIndexed)
 for tok in firstTokens:
 		allWords.append(tok)
 togetherString = putTokensInOne(firstTokens)
-df1 = pd.DataFrame({'ROOT': [togetherString]})
+df1 = pd.DataFrame({'placeholder': ['this is to start dataframe']})
 
 
 
@@ -311,9 +301,13 @@ for a in newURLs:
 for y in foundBanned:
 	newURLs.remove(y)
 for n in newURLs:
+	if n[-3:] == "png":
+		unknownURLS.append(n)
+		foundBanned.append(n)
 	if n not in bannedUrl:
 		if n[-3:] == "pdf" or n[-3:] == "jpg":
 			unknownURLS.append(n)
+			foundBanned.append(n)
 		elif n[:10] == "dontgohere":#/dontgohere/
 			robotFile = True
 		else:
@@ -323,8 +317,10 @@ for i in processedURLs:	#this doesn't make sense but it works. I'll look into it
 	x = i
 
 count = 1
+weDontLike = "/dontgohere"
 while docsIndexed < inputNum:
-		if x in bannedUrl:
+		print(x)
+		if x in bannedUrl or weDontLike in x or 'noindex' in x or 'does_not_exist' in x:
 			print("found a file we don't wanna mess with (could be for various reasons)")
 			break
 		else:
@@ -366,10 +362,6 @@ def split_line(text):
 	return result
 
 '''*********TFIDF**********'''
-
-#productsDict = df2.values.to_list()
-#df3 = pd.DataFrame(({'query': 'cat's, 'va': b}, index=[0]))
-#print(cosine_similarity(df3, df2))
 
 print("\n\n**********\n")
 countOut = 0
