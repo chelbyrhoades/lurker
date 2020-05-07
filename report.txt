@@ -2,5 +2,67 @@ LURKER REPORT
 GENERATED ON: 2020-05-05
 URL: https://s2.smu.edu/~fmoore TITLE: placeholder
 URL: https://s2.smu.edu/~fmoore/schedule.htm TITLE: placeholder
-URL: https://s2.smu.edu/~fmoore/misc/seo_email.txt TITLE: placeholder
-URL: https://s2.smu.edu/~fmoore/misc/vb_byte.c.txt TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/misc/count_letters_duplicate.txt TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/textfiles/extratextfiles/index.php TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/http://www.wessa.net/rwasp_hierarchicalclustering.wasp TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/textfiles/cow3.txt TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/textfiles/cow4.txt TITLE: placeholder
+URL: https://s2.smu.edu/~fmoore/index.htm TITLE: placeholder
+Duplicate documents found: 
+
+Broken Links found: 
+
+Non-textfiles Found: 
+CS5337_syllabus.pdf
+CS7337_syllabus.pdf
+dontgohere/poem-classification.pptx
+misc/algorithm-HITS.xlsx
+misc/IEEE-Spectrum-The-Dark-Dialect-Oct-2017.pdf
+misc/eg-brown-cow.xlsx
+misc/mercator-article.pdf
+dontgohere/poem-classification.xlsx
+misc/article_google.pdf
+misc/article_pagerank.pdf
+dontgohere/bayes-hockey-football.xlsx
+misc/eg-little-lamb.xlsx
+misc/letter_distribution.pptx
+misc/theasurus-coocurrence.xlsx
+misc/word-morphing-puzzle.pdf
+misc/eg-figure6-12.xlsx
+misc/IEEE-reimagining-search-june-2016.pdf
+CS5337_syllabus.pdf
+CS7337_syllabus.pdf
+
+Definition of a 'word': 
+In the realm of Web Crawling, a word is only as powerful as it's frequency. Meaning, if a word appears several times within a document, then it's ranking goes up. Uniqueness within words is also taken into account, such as a user looking for a specific website needs specific words to find it. A person could search for 'Sausage Biscuits' and find loads of results. It might not be the exact result that they're looking for. If they add 'Grand's Sausage Biscuits' to their search, the unique combination of words helps filter to what the user wants. The same is reflected in Web Crawling. Using tfidf as a mathematical filter, we can determine how much weight a word puts on a website.
+
+Number of documents indexed: 8
+
+Number of words indexed: 480
+
+Term-document frequency matrix:
+The tfidf is printed to the terminal as well as matrix.csv
+
+The top 20 most commonly used words and the amount of times that they are used: 
+ 58
+(chpt 14
+Hmwk 12
+Spring 10
+Mar 9
+Apr 9
+Freeman 8
+assigned, 8
+Feb 8
+The 7
+Moore 6
+SMU 5
+CS 5
+part 5
+: 4
+Syllabus 4
+Web 4
+site 4
+Dr. 4
+Jan 4
+
+ The disallowed file was: mailto:fmoore@lyle.smu.edu

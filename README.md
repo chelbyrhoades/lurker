@@ -5,6 +5,8 @@ A python-based web crawler designed for SMU CS 5337. It is given a preset list o
 ##BIG UPDATE:
 Adding cosine similarity! Yesss!
 
+Lurker is under maintenance right now.
+
 ## Installation of Required libraries
 For Mac:
 ```bash
@@ -56,10 +58,12 @@ import openpyxl
 The names should be the same for the Mac files.
 
 ## Running the project
+##NOTICE - different from original lurker.py runLink.
+This is for a short amount of time. I don't want to dispose of the entire lurker.py file, rather I'm creating a frankenstein-esque creature from its parts. The current file is lurk.py. To run the older version of the code, you can run lurker.py, but please notice that it is old.
 In order to run this project, the system must be updated to Python3. A tutorial to do so can be found at: https://realpython.com/installing-python/
 ##### For Mac:
 ```bash
-  python3 lurker.py
+  python3 lurk.py
 ```
 #### For Windows:
 First off, Mac is better.

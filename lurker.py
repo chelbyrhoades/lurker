@@ -221,7 +221,6 @@ def getTitle(link):
 	page = urllib.request.urlopen('http://en.wikipedia.org')
 	html = BeautifulSoup(page.read(), 'html.parser')
 	print(html.title.string)
-
 	return html.title.string
 
 def querySearch(queryTerm, data, numDocs, qWord):
@@ -300,7 +299,7 @@ for a in newURLs:
 		foundBanned.append(a)
 for y in foundBanned:
 	newURLs.remove(y)
-for n in newURLs:
+for n in newURLs: #pdf png htm html txt php ~fmoore.
 	if n[-3:] == "png":
 		unknownURLS.append(n)
 		foundBanned.append(n)
@@ -321,13 +320,13 @@ weDontLike = "/dontgohere"
 while docsIndexed < inputNum:
 		print(x)
 		if x in bannedUrl or weDontLike in x or 'noindex' in x or 'does_not_exist' in x:
-			print("found a file we don't wanna mess with (could be for various reasons)")
+			print("found a file we don't wanna mess with (could be for various reasons): {}".format(x))
 			break
 		else:
 			print('loading...')
 			tempx = x
 			x = starterUrl + "/" + x
-			alreadySearchedURLS.append(x)
+			alreadySearchedURLS.append(x) 
 			returnedWords, firstTokens, leTitle = processLink(x)
 			outFile.write("\nURL: {} TITLE: {}".format(x, leTitle))
 			for tok in firstTokens:

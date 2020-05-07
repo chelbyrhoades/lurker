@@ -18,102 +18,6 @@ import operator
 import sys #getting input
 import PySimpleGUI as sg
 
-''' FUNCTIONS '''
-
-def loadLinks(url):
-	session = requests.Session()
-	retry = Retry(connect=3, backoff_factor=0.5) # helps for politeness
-	adapter = HTTPAdapter(max_retries=retry)
-	session.mount('http://', adapter)
-	session.mount('https://', adapter)
-
-	html = requests.get(url).content
-	bsO = BeautifulSoup(html, 'lxml')
-	links = bsO.findAll('a')
-	finalLinks = set()
-	for link in links:               #got this from Beautiful Soup documentation.
-		finalLinks.add(link.attrs['href'])
-	return finalLinks
-
-#checking to see if the url is broken. We don't like broken urls.
-def checkUrl(url):
-	p = urlparse(url)
-	conn = httplib.HTTPConnection(p.netloc)
-	conn.request('HEAD', p.path)
-	resp = conn.getresponse()
-	return resp.status < 400
-
-
-#opening and starting the outfile
-outFile = open('report.txt', 'w')
-today = date.today()
-outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
-
-
-def visualGUI(notInIt):
-	sg.theme('Dark Blue 3')	# Add a touch of color
-	jokeList = ['What do you call a hill full of cats?\n A meow-ntain', 'Two guys walk into a bar. The third one ducks.', 'How many programmers does it take to change a lightbulb? None. Its a hardware problem.']
-
-# All the stuff inside your window.
-	layout = [
-			[sg.Text('Welcome to Lurker! Ready to search?'), sg.Text('      ', key='-OUTPUT-')],
-			[sg.Text()],
-			[sg.Button('Search'), sg.Button('Joke'), sg.Button('More info'),sg.Button('Stop')]
-			]
-# Create the Window
-	info = "Disallowed path found using the robots.txt file: " + notInIt
-	info2 = 'I stored the tfidf in a dataframe, then transformed it using cosine similarity.'
-	info3 = "I changed quite a bit with these files - previously, my Lurker had been reading files that it shouldn't have, as well as it didn't have a cool GUI."
-	info4 = "This Lurker stores html, php, and text files and uses the data for the search"
-	info5 = "I used sklearn's tfidfVectorizer and CosineSimilarity libraries in order to be able to search multiple terms"
-	window = sg.Window('Lurker Mainframe', layout, location=(800,600))
-	win2_active = False
-	i=0
-	while True:             # Event Loop
-		event, values = window.read(timeout=100)
-		if event != sg.TIMEOUT_KEY:
-			print(i, event, values)
-		if event in(None, 'More info'):
-			sg.popup(info, info2, info3, info4, info5)
-		if event in (None, 'Stop'):
-			break
-		elif event == 'Joke':
-			sg.popup(random.choice(jokeList))
-		i+=1
-		if event == 'Search' and not win2_active:     # only run if not already showing a window2
-			win2_active = True
-	        # window 2 layout - note - must be "new" every time a window is created
-			layout2 = [
-				[sg.Text('Enter a search query:')],
-				[sg.Input(key='-IN-')],
-				[sg.Button('Show'), sg.Button('Stop')]
-					]
-			window2 = sg.Window('Lurker Search', layout2)
-	    # Read window 2's events.  Must use timeout of 0
-		cat = ['dog', 'bill'] #change this
-		if win2_active:
-	        # print("reading 2")
-			event, values = window2.read(timeout=100)
-	        # print("win2 ", event)
-			if event != sg.TIMEOUT_KEY:
-				print("win2 ", event)
-			if event == 'Stop' or event is None:
-	            # print("Closing window 2", event)
-				win2_active = False
-				window2.close()
-			if event == 'Show':
-				sg.popup('You entered ', values['-IN-'])
-				#send values['-IN-'] to the database to see if its in it
-				#use the passed in to query
-				#score, docurl, doctitle
-				if values['-IN-'] not in cat:#change cat to the numpy tuple
-					sg.popup('Sorry it isnt in database.')
-			if values['-IN-'].lower() == 'stop':
-				win2_active = False
-				window2.close()
-	window.close()
-
-
 '''STARTING TO CRAWL'''
 def dissing():
 	disallowURL = []
@@ -127,15 +31,89 @@ def dissing():
 		elif line.startswith('Disallow'):    # this is for disallowed url
 			result_data_set["Disallowed"].append(line.split(': ')[1].split(' ')[0])   # to neglect the comments or other junk info
 			disallowURL.append(line.split(': ')[1].split(' ')[0])
-	return disallowURL[0]
+	return disallowURL
+
+#this looks for possible links given the url
+def links(url, disallowed):
+	preferedTypes = ["htm", "php", "txt"]
+	html = requests.get(url).content
+	bsO = BeautifulSoup(html, 'lxml')
+	links = bsO.findAll('a')
+	finalLinks = set()
+	resultLinks = []
+	for link in links:               #got this from Beautiful Soup documentation.
+		finalLinks.add(link.attrs['href'])
+
+	for i in finalLinks:
+		if i[-3:] in preferedTypes or i[-4] == "html" and disallowed not in i or i[-1] == '/':
+			resultLinks.append(i)
+	return resultLinks
+
+def crawlFurther(path, beforePath, disallowed):
+	lookat = beforePath + path
+
+	print(lookat)
+	leLinks = links(lookat, disallowed)
+	for i in leLinks:
+		i = path + '/' + i
+	return leLinks
+
+
+
+#starting a session and making sure we aren't being impolite
+session = requests.Session()
+retry = Retry(connect=3, backoff_factor=0.5)
+adapter = HTTPAdapter(max_retries=retry)
+session.mount('http://', adapter)
+session.mount('https://', adapter)
+
+#opening and starting the outfile
+outFile = open('report.txt', 'w')
+today = date.today()
+outFile.write('LURKER REPORT\nGENERATED ON: {}'.format(today))
 
 
 
 
-
-'''MAIN OF THE FUNCTION'''
 if __name__=='__main__':
-	notAllowed = dissing()
-	visualGUI(notAllowed)
-	#do the visual LAST so we don't recrawl the same data
+	allURLS = []
+	alreadySearched = []
+	disallowedURLS = dissing()
+	webAddress = "https://s2.smu.edu/~fmoore/"
+	allURLS.append(webAddress)
+	print(disallowedURLS)
+	gotInput = False
+
+	print("Lurker: A Web Crawler\n")
+	print('To properly see the readme, please consider reading it through the github website\n')
+	print('The results will be in reports.txt and matrix.csv\n')
+	print("************ Now let's begin! ************")
+	#making sure a number is put in
+	while gotInput != True:
+		inputNum = int(input("\nEnter the number of files that you want to crawl: "))
+		if inputNum > 0:
+			gotInput = True
+
+			flinks = links(webAddress, disallowedURLS)
+			alreadySearched.append(webAddress)
+			for lin in flinks:
+				allURLS.append(lin)
+#finding more links - digging deeper
+			for i in flinks:
+				moreLinks = crawlFurther(i, webAddress, disallowedURLS)
+				alreadySearched.append(i)
+			for lin in moreLinks:
+				allURLS.append(lin)
+
+		print(allURLS)
+		for i in allURLS:
+			if i not in alreadySearched:
+				print("searching" + i)
+				evenMoreLinks = crawlFurther(i, webAddress, disallowedURLS)
+			else:
+				print('already got it')
+		print(evenMoreLinks)
+
+
+
 
